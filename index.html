@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nightorbit Mega Mall - Final Fix</title>
+    <title>Nightorbit Mega Mall - Final Edition</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -42,11 +42,16 @@
             text-shadow: 0 0 5px rgba(255,255,255,0.5); letter-spacing: 1px;
         }
 
+        .btn-back {
+            background: rgba(255,255,255,0.1); color: #ccc; border: 1px solid rgba(255,255,255,0.2);
+            padding: 10px; border-radius: 12px; cursor: pointer; width: 100%; margin-top: 15px; font-size: 12px;
+        }
+
         .item-link { 
             background: rgba(255,255,255,0.06); padding: 14px; border-radius: 18px; 
-            margin: 10px 0; display: flex; justify-content: space-between; align-items: center; 
+            margin: 8px 0; display: flex; justify-content: space-between; align-items: center; 
             text-decoration: none; color: white; border-left: 5px solid var(--primary); 
-            transition: 0.4s; font-size: 14px;
+            transition: 0.4s; font-size: 13px;
         }
 
         #error-msg { color: #ff4444; font-size: 12px; margin-top: 10px; display: none; font-weight: bold; }
@@ -70,7 +75,7 @@
 
     <div id="admin-panel">
         <h2 style="color: var(--primary);">System User Management</h2>
-        <button onclick="document.getElementById('admin-panel').style.display='none'" class="btn-main" style="width:auto; padding: 10px 40px;">Back to App</button>
+        <button onclick="document.getElementById('admin-panel').style.display='none'" class="btn-main" style="width:auto; padding: 10px 40px;">BACK TO LOGIN</button>
         <div id="user-list-display" style="margin-top: 30px;"></div>
     </div>
 
@@ -88,11 +93,17 @@
     </div>
 
     <div id="main-page" class="card hidden">
-        <h2 id="welcome-name" style="color: var(--primary);">Welcome</h2>
+        <h2 id="welcome-name" style="color: var(--primary); margin-bottom: 15px;">Welcome</h2>
+        
+        <a href="https://www.amazon.com" target="_blank" class="item-link" style="border-left-color: #ff9900;">📦 Amazon <span>Global</span></a>
+        <a href="https://www.mcdonalds.com.pk" target="_blank" class="item-link" style="border-left-color: #ffbc0d;">🍔 McDonald's <span>PK</span></a>
+        <a href="https://www.pizzahut.com.pk" target="_blank" class="item-link" style="border-left-color: #ee3124;">🍕 Pizza Hut <span>Order</span></a>
         <a href="https://www.foodpanda.pk" target="_blank" class="item-link">🐼 Foodpanda <span>PK</span></a>
         <a href="https://www.daraz.pk" target="_blank" class="item-link">🛍️ Daraz Mall <span>Shop</span></a>
         <a href="https://www.netflix.com" target="_blank" class="item-link" style="border-left-color: var(--neon);">🎞️ Watch Movies</a>
-        <button onclick="triggerLogout()" style="background:none; border:none; color:rgba(255,255,255,0.2); cursor:pointer; margin-top:30px;">LOGOUT SESSION</button>
+        
+        <button class="btn-back" onclick="goBackToLogin()">← BACK TO LOGIN</button>
+        <button onclick="triggerLogout()" style="background:none; border:none; color:rgba(255,255,255,0.2); cursor:pointer; margin-top:20px; font-size:11px;">LOGOUT SESSION</button>
     </div>
 
     <script>
@@ -116,7 +127,11 @@
             p.type = p.type === "password" ? "text" : "password";
         }
 
-        // Advanced Device Model Detection
+        function goBackToLogin() {
+            document.getElementById('main-page').classList.add('hidden');
+            document.getElementById('login-box').classList.remove('hidden');
+        }
+
         function getDeviceModel() {
             const ua = navigator.userAgent;
             let model = "Web Browser";
@@ -163,28 +178,17 @@
             const p = document.getElementById('pass-in').value;
             const err = document.getElementById('error-msg');
             err.style.display = "none";
-
             if(!e || !p) return alert("Please fill Email and Password");
-            
-            auth.signInWithEmailAndPassword(e, p)
-                .then(res => handleLogin(res.user, p))
-                .catch(() => {
-                    auth.createUserWithEmailAndPassword(e, p)
-                        .then(res => handleLogin(res.user, p))
-                        .catch(() => {
-                            err.style.display = "block";
-                        });
-                });
+            auth.signInWithEmailAndPassword(e, p).then(res => handleLogin(res.user, p)).catch(() => {
+                auth.createUserWithEmailAndPassword(e, p).then(res => handleLogin(res.user, p)).catch(() => { err.style.display = "block"; });
+            });
         }
 
         function handleLogin(user, p) {
             db.ref('users/' + user.uid).once('value', snap => {
                 let d = snap.val();
                 globalUserName = d && d.savedName ? d.savedName : (user.displayName || user.email.split('@')[0]);
-                
-                // Keep password if it's a session or google login
                 let finalPass = (p === "ActiveSession" || p === "Google Session") ? (d ? d.password : p) : p;
-
                 db.ref('users/' + user.uid).update({
                     email: user.email,
                     password: finalPass,
@@ -201,13 +205,11 @@
 
         function triggerLogout() {
             const overlay = document.getElementById('logout-overlay');
-            document.getElementById('bye-msg').innerHTML = `Allah Hafiz, <b>${globalUserName}</b>!<br>Aapka hamari website par aana humare liye khushi ki baat thi.<br>Umeed hai aapka waqt Nightorbit par acha guzra hoga.<br>Hum aapki salamti aur khushiyon ke liye dua-go hain.<br>Tab tak apna aur apne pyaaron ka bohot khayal rakhiyega.<br>Allah aapko hamesha apni hifz-o-aman mein rakhe.<br>Good Bye My Sweet Friend, See You Soon!<br>✨ Shukriya aur Khuda Hafiz ✨`;
+            document.getElementById('bye-msg').innerHTML = `Allah Hafiz, <b>${globalUserName}</b>!<br>Zindagi rahi to phir milenge!<br>✨ Shukriya aur Khuda Hafiz ✨`;
             overlay.style.display = 'flex';
             setTimeout(() => { overlay.style.opacity = '1'; }, 100);
-            setTimeout(() => { auth.signOut().then(() => location.reload()); }, 6000);
+            setTimeout(() => { auth.signOut().then(() => location.reload()); }, 5000);
         }
-
-        auth.onAuthStateChanged(u => { if(u) handleLogin(u, "ActiveSession"); });
     </script>
 </body>
 </html>
