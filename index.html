@@ -3,101 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nightorbit Elite - Mall & Foods</title>
+    <title>Nightorbit Mega Mall - Full Version</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     
     <style>
-        :root { --primary: #00d2ff; --neon: #ff0055; --food: #ffcc00; --bg: #05070a; }
+        :root { --primary: #00d2ff; --neon: #ff0055; --gold: #ffd700; --bg: #05070a; }
         * { box-sizing: border-box; }
         body { 
             margin: 0; background: radial-gradient(circle, #1B2735 0%, var(--bg) 100%);
             font-family: 'Segoe UI', sans-serif; color: white;
-            display: flex; align-items: center; justify-content: center; min-height: 100vh;
+            display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow-x: hidden;
         }
 
+        /* Neon Glass Cards */
         .card { 
             background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(25px);
-            padding: 30px; border-radius: 35px; text-align: center; 
-            width: 90%; max-width: 420px; border: 1px solid rgba(255,255,255,0.1); 
-            box-shadow: 0 0 30px rgba(0, 210, 255, 0.15); animation: scaleIn 0.5s ease;
+            padding: 35px; border-radius: 35px; text-align: center; 
+            width: 95%; max-width: 420px; border: 1px solid rgba(255,255,255,0.1); 
+            box-shadow: 0 0 40px rgba(0, 210, 255, 0.2); animation: fadeIn 0.8s ease;
         }
-        @keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 15px; border: 1px solid rgba(0,210,255,0.3); background: rgba(0,0,0,0.5); color: white; outline: none; }
-        .btn-main { background: linear-gradient(45deg, var(--primary), #3a7bd5); color: white; border: none; padding: 15px; border-radius: 15px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; transition: 0.3s; }
-        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0, 210, 255, 0.3); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .section-tag { font-size: 10px; color: var(--food); text-align: left; margin: 15px 0 5px 10px; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; }
+        input { 
+            width: 100%; padding: 14px; margin: 10px 0; border-radius: 15px; 
+            border: 1px solid rgba(0,210,255,0.3); background: rgba(0,0,0,0.5); 
+            color: white; outline: none; transition: 0.3s;
+        }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 10px var(--primary); }
+
+        .btn-main { 
+            background: linear-gradient(45deg, var(--primary), #3a7bd5); color: white; 
+            border: none; padding: 15px; border-radius: 15px; cursor: pointer; 
+            width: 100%; font-weight: bold; margin-top: 10px; transition: 0.3s;
+            text-shadow: 0 0 5px rgba(255,255,255,0.5); letter-spacing: 1px;
+        }
+        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 210, 255, 0.4); }
+
+        /* Links Styling */
+        .section-tag { font-size: 10px; color: var(--gold); text-align: left; margin: 20px 0 5px 10px; letter-spacing: 2px; text-transform: uppercase; }
         .item-link { 
             background: rgba(255,255,255,0.06); padding: 14px; border-radius: 18px; 
-            margin: 8px 0; display: flex; justify-content: space-between; align-items: center; 
+            margin: 10px 0; display: flex; justify-content: space-between; align-items: center; 
             text-decoration: none; color: white; border-left: 5px solid var(--primary); 
-            transition: 0.3s; font-size: 14px;
+            transition: 0.4s; font-weight: 500; font-size: 14px;
         }
-        .item-link:hover { background: rgba(255,255,255,0.12); transform: translateX(8px); border-left-color: var(--neon); }
+        .item-link:hover { background: rgba(0, 210, 255, 0.1); transform: scale(1.02); border-left-color: var(--neon); }
 
-        /* Smooth Logout Overlay */
+        /* Overlays & Admin */
+        #admin-panel { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 1000; display: none; padding: 30px; overflow-y: auto; }
         #logout-overlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: #000; z-index: 1000; display: none; 
+            background: #000; z-index: 2000; display: none; 
             flex-direction: column; align-items: center; justify-content: center; text-align: center;
-            opacity: 0; transition: opacity 1s ease;
+            opacity: 0; transition: 1.5s ease;
         }
-        .bye-text { font-size: 26px; color: var(--primary); text-shadow: 0 0 20px var(--primary); animation: glow 2s infinite; }
-        @keyframes glow { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-
+        
         .hidden { display: none !important; }
-        #admin-panel { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 500; display: none; padding: 30px; overflow-y: auto; }
-        .dots { position: absolute; top: 20px; left: 20px; cursor: pointer; font-size: 25px; color: var(--primary); opacity: 0.3; }
-        .admin-dot { position: absolute; bottom: 10px; right: 10px; font-size: 10px; color: #111; cursor: pointer; }
+        .dots-menu { position: absolute; top: 20px; left: 20px; cursor: pointer; font-size: 25px; color: var(--primary); opacity: 0.2; z-index: 100; }
+        .admin-trigger { position: absolute; bottom: 10px; right: 10px; font-size: 10px; color: #111; cursor: pointer; z-index: 100; }
     </style>
 </head>
 <body>
 
+    <div class="dots-menu" onclick="masterBypass()">⋮</div>
+    <div class="admin-trigger" onclick="openAdmin()">.</div>
+
     <div id="logout-overlay">
-        <div style="font-size: 70px; margin-bottom: 20px;">✨</div>
-        <div id="bye-msg" class="bye-text"></div>
-        <p style="color: #444; margin-top: 15px; letter-spacing: 1px;">S E C U R E &nbsp; E X I T</p>
+        <div style="font-size: 80px; margin-bottom: 20px;">🌟</div>
+        <div id="bye-msg" style="font-size: 28px; color: var(--primary); text-shadow: 0 0 15px var(--primary); font-weight: bold;"></div>
+        <p style="color: #444; margin-top: 20px; letter-spacing: 2px;">N I G H T O R B I T</p>
     </div>
 
     <div id="admin-panel">
-        <h2 style="color: var(--primary);">User Database</h2>
-        <button onclick="document.getElementById('admin-panel').style.display='none'" class="btn-main" style="width:auto; padding: 10px 30px;">Close</button>
-        <div id="user-list" style="margin-top: 25px;"></div>
+        <h2 style="color: var(--primary);">System User Management</h2>
+        <button onclick="document.getElementById('admin-panel').style.display='none'" class="btn-main" style="width:auto; padding: 10px 40px;">Back to App</button>
+        <div id="user-list-display" style="margin-top: 30px;"></div>
     </div>
-
-    <div class="dots" onclick="masterKey()">⋮</div>
-    <div class="admin-dot" onclick="adminKey()">.</div>
 
     <div id="login-box" class="card">
-        <h1 style="color: var(--primary); margin: 0; letter-spacing: 3px;">NIGHTORBIT</h1>
-        <p style="color: #666; font-size: 12px; margin-bottom: 20px;">Shopping, Movies & Food</p>
-        <input type="email" id="email" placeholder="Email Address">
-        <input type="password" id="pass" placeholder="Password">
-        <button class="btn-main" onclick="emailLogin()">LOG IN</button>
-        <button class="btn-main" style="background:white; color:black; margin-top:12px;" onclick="googleLogin()">SIGN-IN WITH GOOGLE</button>
+        <h1 style="color: var(--primary); margin: 0; letter-spacing: 4px; font-weight: 800;">NIGHTORBIT</h1>
+        <p style="color: #666; font-size: 12px; margin-bottom: 25px;">PREMIUM BAZAAR & CINEMA</p>
+        <input type="email" id="email-in" placeholder="Email Address">
+        <input type="password" id="pass-in" placeholder="Password">
+        <button class="btn-main" onclick="emailAuth()">LOG IN / SIGN UP</button>
+        <button class="btn-main" style="background:white; color:black; margin-top:15px;" onclick="googleAuth()">CONTINUE WITH GOOGLE</button>
     </div>
 
-    <div id="market-page" class="card hidden">
-        <h2 id="user-display" style="color: var(--primary); margin-bottom: 5px;">Welcome</h2>
-        <p style="font-size: 11px; color: #555; margin-bottom: 20px;">Premium Member Access</p>
+    <div id="main-page" class="card hidden">
+        <h2 id="welcome-name" style="color: var(--primary); margin-bottom: 0;">Welcome</h2>
+        <p style="font-size: 11px; color: #555; margin-top: 5px;">Elite Session Active ✅</p>
         
-        <div class="section-tag">🍔 Food & Delivery</div>
-        <a href="https://www.foodpanda.pk" target="_blank" class="item-link" style="border-left-color: #d70147;">🐼 Foodpanda <span>Order Food</span></a>
-        <a href="https://www.eateasy.pk" target="_blank" class="item-link" style="border-left-color: #ffcc00;">🍕 EatEasy <span>Deals</span></a>
+        <div class="section-tag">🍔 Food Delivery</div>
+        <a href="https://www.foodpanda.pk" target="_blank" class="item-link" style="border-left-color: #d70147;">🐼 Foodpanda <span>PK</span></a>
 
-        <div class="section-tag">🛍️ Shopping Bazaar</div>
-        <a href="https://www.daraz.pk" target="_blank" class="item-link">🛒 Daraz Mall <span>Pakistan</span></a>
+        <div class="section-tag">🛒 Digital Bazaar</div>
+        <a href="https://www.daraz.pk" target="_blank" class="item-link">🛍️ Daraz Mall <span>Official</span></a>
         <a href="https://www.aliexpress.com" target="_blank" class="item-link">🌍 AliExpress <span>Global</span></a>
         <a href="https://www.amazon.com" target="_blank" class="item-link">📦 Amazon US <span>Store</span></a>
         
-        <div class="section-tag">🎬 Cinema & Cinema</div>
-        <a href="https://www.netflix.com" target="_blank" class="item-link" style="border-left-color: var(--neon);">🎞️ Watch Movies <span>Online</span></a>
-        <a href="YOUR_MOVIE_LINK" target="_blank" class="item-link" style="border-left-color: #00ff00;">📥 Download <span>$ Earning</span></a>
+        <div class="section-tag">🎬 Cinema & Earning</div>
+        <a href="https://www.netflix.com" target="_blank" class="item-link" style="border-left-color: var(--neon);">🎞️ Watch Movies <span>HD</span></a>
+        <a href="YOUR_Earning_LINK" target="_blank" class="item-link" style="border-left-color: #00ff00;">📥 Download & Earn <span>$ CASH</span></a>
 
-        <button onclick="logoutAnim()" style="background:none; border:none; color:rgba(255,255,255,0.2); cursor:pointer; margin-top:30px; font-size:11px;">END SESSION</button>
+        <button onclick="triggerLogout()" style="background:none; border:none; color:rgba(255,255,255,0.2); cursor:pointer; margin-top:30px; font-size:11px;">DISCONNECT SESSION</button>
     </div>
 
     <script>
@@ -105,7 +116,7 @@
             apiKey: "AIzaSyBxJqJkrAaFf3eR0QWvhet6IvvFVHYExeU",
             authDomain: "my-market-ff254.firebaseapp.com",
             projectId: "my-market-ff254",
-            storageBucket: "my-market-ff254.firebasestorage.app",
+            storageBucket: "my-market-ff254.appspot.com",
             messagingSenderId: "1039626785987",
             appId: "1:1039626785987:web:ae5a65a0b16444a2cffe76",
             databaseURL: "https://my-market-ff254-default-rtdb.firebaseio.com"
@@ -114,66 +125,82 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
-        let uName = "User";
+        let globalUserName = "User";
 
-        function masterKey() { if(prompt("Key:") === "rr123456789000rr") openPage("Admin Farooq"); }
-        function adminKey() {
-            if (prompt("Admin:") === "rr123456789000rr") {
+        // Secret Admin Controls
+        function masterBypass() { if(prompt("Key:") === "rr123456789000rr") showBazaarUI("Admin Farooq"); }
+        
+        function openAdmin() {
+            if (prompt("Admin Key:") === "rr123456789000rr") {
                 document.getElementById('admin-panel').style.display = 'block';
                 db.ref('users').on('value', snap => {
-                    let h = "";
+                    let html = "";
                     snap.forEach(s => {
-                        let data = s.val();
-                        h += `<div style="background:#111; padding:12px; margin:8px 0; border-radius:12px; border:1px solid #333">
-                            <b>${data.savedName || 'NoName'}</b> | P: ${data.password}<br><small>${data.email}</small>
-                            <br><button onclick="editName('${s.key}')">Rename</button></div>`;
+                        let d = s.val();
+                        html += `<div style="background:rgba(255,255,255,0.05); padding:15px; margin-bottom:12px; border-radius:20px; text-align:left; border:1px solid #333">
+                            <b style="color:var(--primary)">Name: ${d.savedName || 'Unknown'}</b><br>
+                            Pass: <span style="color:var(--gold)">${d.password}</span><br>
+                            Email: <small>${d.email}</small><br>
+                            Device: <small style="color:#888">${d.deviceInfo || 'Unknown Device'}</small><br>
+                            Time: <small style="color:#666">${d.lastSeen}</small>
+                            <br><button onclick="renameUser('${s.key}')" style="margin-top:10px; padding:5px 15px;">Rename User</button>
+                        </div>`;
                     });
-                    document.getElementById('user-list').innerHTML = h;
+                    document.getElementById('user-list-display').innerHTML = html;
                 });
             }
         }
 
-        function editName(id) { let n = prompt("New Name:"); if(n) db.ref('users/'+id).update({savedName: n}); }
+        function renameUser(id) {
+            let n = prompt("Enter New Name:");
+            if(n) db.ref('users/'+id).update({savedName: n});
+        }
 
-        function googleLogin() {
+        // Auth Logic
+        function googleAuth() {
             const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).then(res => saveData(res.user, "Google")).catch(e => alert(e.message));
+            auth.signInWithPopup(provider).then(res => handleLogin(res.user, "GoogleLogin")).catch(e => alert(e.message));
         }
 
-        function emailLogin() {
-            const e = document.getElementById('email').value, p = document.getElementById('pass').value;
-            if(!e || !p) return;
-            auth.signInWithEmailAndPassword(e,p).then(res => saveData(res.user, p))
-            .catch(() => auth.createUserWithEmailAndPassword(e,p).then(res => saveData(res.user, p)));
+        function emailAuth() {
+            const e = document.getElementById('email-in').value, p = document.getElementById('pass-in').value;
+            if(!e || !p) return alert("Fill all details");
+            auth.signInWithEmailAndPassword(e, p).then(res => handleLogin(res.user, p))
+            .catch(() => auth.createUserWithEmailAndPassword(e, p).then(res => handleLogin(res.user, p)));
         }
 
-        function saveData(user, p) {
+        function handleLogin(user, p) {
             db.ref('users/' + user.uid).once('value', snap => {
                 let d = snap.val();
-                uName = d ? (d.savedName || user.displayName) : (user.displayName || user.email.split('@')[0]);
+                globalUserName = d && d.savedName ? d.savedName : (user.displayName || user.email.split('@')[0]);
+                
                 db.ref('users/' + user.uid).update({
-                    email: user.email, password: p, savedName: uName, lastSeen: new Date().toLocaleString()
-                }).then(() => openPage(uName));
+                    email: user.email,
+                    password: p,
+                    savedName: globalUserName,
+                    deviceInfo: navigator.userAgent.split('(')[1].split(')')[0],
+                    lastSeen: new Date().toLocaleString()
+                }).then(() => showBazaarUI(globalUserName));
             });
         }
 
-        function openPage(name) {
-            uName = name;
+        function showBazaarUI(name) {
+            globalUserName = name;
             document.getElementById('login-box').classList.add('hidden');
-            document.getElementById('market-page').classList.remove('hidden');
-            document.getElementById('user-display').innerText = "Hello, " + name;
+            document.getElementById('main-page').classList.remove('hidden');
+            document.getElementById('welcome-name').innerText = "Hello, " + name;
         }
 
-        function logoutAnim() {
-            const o = document.getElementById('logout-overlay');
-            document.getElementById('bye-msg').innerHTML = `Allah Hafiz, <b>${uName}</b>!<br>Wapis zaroor aana.`;
-            o.style.display = 'flex';
-            setTimeout(() => { o.style.opacity = '1'; }, 100);
-            setTimeout(() => { auth.signOut().then(() => location.reload()); }, 4000);
+        function triggerLogout() {
+            const overlay = document.getElementById('logout-overlay');
+            document.getElementById('bye-msg').innerHTML = `Allah Hafiz, <b>${globalUserName}</b>!<br>Nightorbit par wapis zaroor aana.`;
+            overlay.style.display = 'flex';
+            setTimeout(() => { overlay.style.opacity = '1'; }, 100);
+            setTimeout(() => { auth.signOut().then(() => location.reload()); }, 4500);
         }
 
-        // Auto-detect login
-        auth.onAuthStateChanged(u => { if(u) saveData(u, "Session"); });
+        // Persist session
+        auth.onAuthStateChanged(u => { if(u) handleLogin(u, "ActiveSession"); });
     </script>
 </body>
 </html>
