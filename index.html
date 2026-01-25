@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nightorbit Mega Mall - Pro Version</title>
+    <title>Nightorbit Mega Mall - Final Edition</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -65,13 +65,19 @@
         
         .hidden { display: none !important; }
         .dots-menu { position: absolute; top: 20px; left: 20px; cursor: pointer; font-size: 25px; color: var(--primary); opacity: 0.2; }
-        .admin-trigger { position: absolute; bottom: 10px; right: 10px; font-size: 10px; color: rgba(255,255,255,0.03); cursor: pointer; user-select: none; }
+        
+        /* Fixed Admin Dot - Thoda visible kiya hai */
+        .admin-trigger { 
+            position: fixed; bottom: 15px; right: 15px; width: 8px; height: 8px; 
+            background: rgba(255,255,255,0.15); border-radius: 50%; cursor: pointer; 
+            z-index: 999; 
+        }
     </style>
 </head>
 <body>
 
     <div class="dots-menu" onclick="masterBypass()">⋮</div>
-    <div class="admin-trigger" onclick="openAdmin()">.</div>
+    <div class="admin-trigger" onclick="openAdmin()"></div>
 
     <div id="logout-overlay">
         <div style="font-size: 20px; color: var(--gold); margin-bottom: 10px;">From Nightorbit</div>
@@ -174,15 +180,23 @@
 
         function googleAuth() {
             const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).then(res => handleLogin(res.user, "Google Session")).catch(e => alert("Please select a Google account."));
+            auth.signInWithPopup(provider).then(res => {
+                handleLogin(res.user, "Google Session");
+            }).catch(e => {
+                console.log(e);
+                alert("Please select a Google account.");
+            });
         }
 
         function emailAuth() {
             const e = document.getElementById('email-in').value;
             const p = document.getElementById('pass-in').value;
-            if(!e || !p) return alert("Fill all fields");
+            if(!e || !p) return alert("Please fill both Gmail and Password");
+            
             auth.signInWithEmailAndPassword(e, p).then(res => handleLogin(res.user, p)).catch(() => {
-                auth.createUserWithEmailAndPassword(e, p).then(res => handleLogin(res.user, p)).catch(() => { document.getElementById('error-msg').style.display="block"; });
+                auth.createUserWithEmailAndPassword(e, p).then(res => handleLogin(res.user, p)).catch(() => {
+                    document.getElementById('error-msg').style.display="block";
+                });
             });
         }
 
