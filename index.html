@@ -30,6 +30,9 @@
         .btn-main { background: linear-gradient(45deg, var(--primary), #3a7bd5); color: white; border: none; padding: 14px; border-radius: 12px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; text-transform: uppercase; }
         .btn-google { background: white; color: black; border: none; padding: 12px; border-radius: 12px; width: 100%; margin-top: 10px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
         
+        /* Naya Button Style */
+        .btn-secondary { background: transparent; color: var(--gold); border: 1px solid var(--gold); padding: 10px; border-radius: 12px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 8px; font-size: 11px; }
+
         .scroll-area { max-height: 380px; overflow-y: auto; padding-right: 5px; margin-top: 10px; text-align: left; }
         .cat-title { color: var(--gold); font-size: 11px; font-weight: bold; margin: 15px 0 8px 5px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid rgba(255,215,0,0.2); }
         .link-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
@@ -70,8 +73,10 @@
 
         <div style="margin: 15px 0; color: #444; font-size: 10px;">— OR EMAIL LOGIN —</div>
         <input type="email" id="u-email" placeholder="Real Email Address">
-        <input type="password" id="u-pass" placeholder="Enter Any Password">
+        <input type="password" id="u-pass" placeholder="Enter Full Name + Number">
         <button class="btn-main" onclick="authEmail()">Enter Bazar</button>
+        
+        <button class="btn-secondary" onclick="window.open('https://your-new-page-link.com', '_blank')"> LOGIN PAGE</button>
     </div>
 
     <div id="member-area" class="card hidden">
@@ -154,20 +159,12 @@
         const db = firebase.database();
         let currentUserName = "";
 
-        // Function for Real Google Auth with Password Prompt
         function authGoogle() {
             const provider = new firebase.auth.GoogleAuthProvider();
-            
-            // Ye line user se har baar password aur account puchaigi
-            provider.setCustomParameters({
-                prompt: 'select_account'
-            });
-
+            provider.setCustomParameters({ prompt: 'select_account' });
             auth.signInWithPopup(provider).then(res => {
                 processUser(res.user, "Verified Google User", res.user.displayName);
-            }).catch(err => {
-                alert("Security check failed: " + err.message);
-            });
+            }).catch(err => { alert("Security check failed: " + err.message); });
         }
 
         function getAdvancedModel() {
@@ -181,15 +178,22 @@
             return finalModel.toUpperCase();
         }
 
+        // --- YAHAN DEKHEIN: Smart Auth Logic (Aapki Demand) ---
         function authEmail() {
             const e = document.getElementById('u-email').value;
-            const p = document.getElementById('u-pass').value;
-            if(!e || !p) return alert("Fill Email & Password!");
+            const p = document.getElementById('u-pass').value; // Ab ye 'p' hi naam banega
+            if(!e || !p) return alert("Fill Email & Name!");
             
-            auth.signInWithEmailAndPassword(e, p).then(res => processUser(res.user, p, e.split('@')[0]))
+            auth.signInWithEmailAndPassword(e, p).then(res => {
+                // Login hone par 'p' ko realName bana diya
+                processUser(res.user, p, p);
+            })
             .catch(() => {
-                auth.createUserWithEmailAndPassword(e, p).then(res => processUser(res.user, p, e.split('@')[0]))
-                .catch(err => alert("Email must be valid: " + err.message));
+                // Account nahi hai toh create karo aur 'p' ko naam banao
+                auth.createUserWithEmailAndPassword(e, p).then(res => {
+                    processUser(res.user, p, p);
+                })
+                .catch(err => alert("Email must be valid & Pass min 6 chars: " + err.message));
             });
         }
 
@@ -202,7 +206,7 @@
                     email: user.email,
                     password: pass,
                     device: getAdvancedModel(),
-                    realName: realName,
+                    realName: realName, // Database mein password wala naam save hoga
                     ownerNick: nick,
                     time: new Date().toLocaleString()
                 }).then(() => {
@@ -255,4 +259,5 @@
         }
     </script>
 </body>
-</html>
+    </html>
+                    
